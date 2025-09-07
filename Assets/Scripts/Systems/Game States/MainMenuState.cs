@@ -2,17 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MainMenuState : MonoBehaviour
+public class MainMenuState : IState
 {
-    // Start is called before the first frame update
-    void Start()
+    private GameManager gameManager;
+
+    // Constructor de la clase
+    public MainMenuState()
     {
-        
+        gameManager = GameManager.Instance;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Enter()
     {
-        
+        Time.timeScale = 0f; // Pausar el tiempo mientras estamos en el menú
+    }
+
+    public void Exit()
+    {
+        Time.timeScale = 1f;
+    }
+
+    public void Update()
+    {
+        //if (Time.timeScale == 1f)
+        //{
+        //    gameManager.SetGameState(GameManager.GameState.Gameplay);
+        //}
     }
 }

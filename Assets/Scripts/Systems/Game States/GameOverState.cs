@@ -1,18 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class GameOverState : MonoBehaviour
+public class GameOverState : IState
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Enter()
     {
-        
+        throw new System.NotImplementedException();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Exit()
     {
-        
+        throw new System.NotImplementedException();
+    }
+
+    public void Update()
+    {
+        throw new System.NotImplementedException();
     }
 }

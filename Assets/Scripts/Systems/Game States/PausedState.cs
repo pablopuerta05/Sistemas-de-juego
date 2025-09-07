@@ -2,17 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PausedState : MonoBehaviour
+public class PausedState : IState
 {
-    // Start is called before the first frame update
-    void Start()
+    public void Enter()
     {
-        
+        Time.timeScale = 0f;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Exit()
     {
-        
+        Time.timeScale = 1f;
+    }
+
+    public void Update()
+    {
+        throw new System.NotImplementedException();
     }
 }
