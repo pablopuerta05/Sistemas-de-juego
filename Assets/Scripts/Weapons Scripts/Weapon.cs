@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Weapon : Item
+public abstract class Weapon : MonoBehaviour
 {
     [System.Serializable]
     public struct Stats
@@ -10,7 +10,7 @@ public abstract class Weapon : Item
         public string name, description;
 
         [Header("Visuals")]
-        public Projectile projectilePrefab; // if attached, a projectile will spawn every time the weapon cools down.
+        //public Projectile projectilePrefab; // if attached, a projectile will spawn every time the weapon cools down.
         //public Aura auraPrefab; // if attached, an aura will spawn when weapon is equipped.
 
         public ParticleSystem hitEffect;
@@ -52,6 +52,10 @@ public abstract class Weapon : Item
         }
     }
 
+    public int currentLevel = 1, maxLevel = 1;
+
+    protected PlayerStats owner;
+
     protected Stats currentStats;
 
     public WeaponData data;
@@ -63,7 +67,9 @@ public abstract class Weapon : Item
     // for dinamically created weapons, call initialise to set everything up
     public virtual void Initialise(WeaponData data)
     {
-        base.Initialise(data);
+        maxLevel = data.maxLevel;
+        owner = FindObjectOfType<PlayerStats>();
+
         this.data = data;
         currentStats = data.baseStats;
         movement = GetComponent<PlayerMovement>();
@@ -98,10 +104,14 @@ public abstract class Weapon : Item
         }
     }
 
-    // levels up the weapon by 1, and calculates the corresponding stats
-    public override bool DoLevelUp()
+    public virtual bool CanLevelUp()
     {
-        base.DoLevelUp();
+        return currentLevel <= maxLevel;
+    }
+
+    // levels up the weapon by 1, and calculates the corresponding stats
+    public virtual bool DoLevelUp()
+    {
         // prevent level up if we are already at max level
         if (!CanLevelUp())
         {

@@ -2,24 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "WeaponScriptableObject", menuName = "ScriptableObjects/Weapon")]
-public class WeaponScriptableObject : ScriptableObject
+[CreateAssetMenu(fileName = "PassiveItemScriptableObject", menuName = "ScriptableObjects/Passive Item")]
+public class PassiveItemScriptableObject : ScriptableObject
 {
-    [SerializeField] private GameObject prefab;
-    public GameObject Prefab { get => prefab; set => prefab = value; }
-
-    // base stats for weapons
-    [SerializeField] private float damage;
-    public float Damage { get => damage; set => damage = value; }
-
-    [SerializeField] private float speed;
-    public float Speed { get => speed; set => speed = value; }
-
-    [SerializeField] private float cooldownDuration;
-    public float CooldownDuration { get => cooldownDuration; set => cooldownDuration = value; }
-
-    [SerializeField] private int pierce;
-    public int Pierce { get => pierce; set => pierce = value; }
+    [SerializeField] private float multiplier;
+    public float Multiplier { get =>  multiplier; set => multiplier = value; }
 
     [SerializeField] private int level;
     public int Level { get => level; set => level = value; }

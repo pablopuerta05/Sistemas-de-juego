@@ -5,7 +5,7 @@ using UnityEngine;
 public class CharacterSelector : MonoBehaviour
 {
     public static CharacterSelector instance;
-    public CharacterData characterData;
+    public CharacterScriptableObject characterData;
 
     private void Awake()
     {
@@ -21,26 +21,12 @@ public class CharacterSelector : MonoBehaviour
         }
     }
 
-    public static CharacterData GetData()
+    public static CharacterScriptableObject GetData()
     {
-        if (instance && instance.characterData)
-        {
-            return instance.characterData;
-        }
-        else
-        {
-            // if no character data is assigned, we randomly pick one
-            CharacterData[] characters = Resources.FindObjectsOfTypeAll<CharacterData>();
-            if (characters.Length > 0)
-            {
-                return characters[Random.Range(0, characters.Length)];
-            }
-        }
-
-        return null;
+        return instance.characterData;
     }
 
-    public void SelectCharacter(CharacterData character)
+    public void SelectCharacter(CharacterScriptableObject character)
     {
         characterData = character;
     }

@@ -5,8 +5,6 @@ using UnityEngine;
 /// <summary>
 /// Base script of all projectile behaviours [To be placed on a prefab of a weapon that is a projectile]
 /// </summary>
-
-[System.Obsolete]
 public class ProjectileWeaponBehaviour : MonoBehaviour
 {
     public WeaponScriptableObject weaponData;

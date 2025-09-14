@@ -148,6 +148,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a10fa01549ada0d49b8fb1711d34a9ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pauseScreen: {fileID: 0}
+  resultScreen: {fileID: 0}
+  levelUpScreen: {fileID: 0}
+  currentHealthDisplay: {fileID: 0}
+  currentRecoveryDisplay: {fileID: 0}
+  currentMoveSpeedDisplay: {fileID: 0}
+  currentMightDisplay: {fileID: 0}
+  currentProjectileSpeedDisplay: {fileID: 0}
+  currentMagnetDisplay: {fileID: 0}
+  chosenCharacterImage: {fileID: 0}
+  chosenCharacterName: {fileID: 0}
+  LevelReachedDisplay: {fileID: 0}
+  timeSurvivedDisplay: {fileID: 0}
+  chosenWeaponsUI: []
+  chosenPassiveItemsUI: []
+  stopwatchDisplay: {fileID: 0}
 --- !u!4 &28442537
 Transform:
   m_ObjectHideFlags: 0
@@ -1610,6 +1626,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c837ac4787fb8641aeaf40aaaea9642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGameOver: 0
+  choosingUpgrade: 0
+  playerObject: {fileID: 0}
+  timeLimit: 0
 --- !u!4 &1421893147
 Transform:
   m_ObjectHideFlags: 0

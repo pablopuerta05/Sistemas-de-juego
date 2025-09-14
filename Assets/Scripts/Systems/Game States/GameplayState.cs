@@ -5,6 +5,8 @@ using static GameManager;
 
 public class GameplayState : IState
 {
+    public string Name { get => "MainMenu State"; }
+    public GameManager.GameState gameState { get => GameManager.GameState.Gameplay; }
     private GameManager gameManager;
 
     // Constructor de la clase

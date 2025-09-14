@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour
 {
     #region Singleton
 
-    public static UIManager Instance;
+    public static UIManager Instance { get; private set; }
 
     private void Awake()
     {
@@ -60,8 +60,8 @@ public class UIManager : MonoBehaviour
     public void UpdateStopWatchDisplay()
     {
         // calculate the number of minutes and seconds that have elapsed
-        int minutes = Mathf.FloorToInt(stopwatchTime / 60);
-        int seconds = Mathf.FloorToInt(stopwatchTime % 60);
+        int minutes = Mathf.FloorToInt(GameManager.Instance.StopwatchTime / 60);
+        int seconds = Mathf.FloorToInt(GameManager.Instance.StopwatchTime % 60);
 
         // update the stopwatch text to display the elapsed time
         stopwatchDisplay.text = string.Format("{0:00}:{1:00}", minutes, seconds);

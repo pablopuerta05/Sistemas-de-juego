@@ -62,7 +62,7 @@ public class EnemyStats : MonoBehaviour
         // create the text popup when the enemy takes damage
         if (dmg > 0)
         {
-            GameManager.GenerateFloatingText(Mathf.FloorToInt(dmg).ToString(), transform);
+            //GameManager.GenerateFloatingText(Mathf.FloorToInt(dmg).ToString(), transform);
         }
 
         // apply knockback if it is not 0

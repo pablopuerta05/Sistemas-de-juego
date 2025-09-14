@@ -1,9 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class MainMenuState : IState
 {
+    public string Name { get => "MainMenu State"; }
+    public GameManager.GameState gameState { get => GameManager.GameState.MainMenu; }
+
     private GameManager gameManager;
 
     // Constructor de la clase
@@ -11,6 +12,7 @@ public class MainMenuState : IState
     {
         gameManager = GameManager.Instance;
     }
+
 
     public void Enter()
     {

@@ -1,8 +1,7 @@
-using System.Collections;
+    using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Obsolete]
 public class KnifeBehaviour : ProjectileWeaponBehaviour
 {
     // Start is called before the first frame update

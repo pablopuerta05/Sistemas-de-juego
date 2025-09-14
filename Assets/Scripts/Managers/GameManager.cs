@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +5,17 @@ public class GameManager : MonoBehaviour
 {
     #region Singleton
 
-    public static GameManager Instance;
+    private List<IState> states = new List<IState>();
+
+    public static GameManager Instance { get; private set; }
 
     private void Awake()
     {
+        states.Add(new MainMenuState());
+        states.Add(new GameplayState());
+        states.Add(new PausedState());
+        states.Add(new GameOverState());
+
         if (Instance == null)
         {
             Instance = this;
@@ -47,6 +53,7 @@ public class GameManager : MonoBehaviour
     [Header("Stopwatch")]
     public float timeLimit; // the time limit in seconds
     private float stopwatchTime; // the current time elapsed since the stopwatch started
+    [HideInInspector] public float StopwatchTime => stopwatchTime;
 
     private void Start()
     {
@@ -61,29 +68,23 @@ public class GameManager : MonoBehaviour
     }
 
     // Define the method to change the state of the game
+
     public void SetGameState(GameState newState)
     {
         // Si hay un estado anterior, llamamos al Exit
         currentState?.Exit();
 
         // Establecemos el nuevo estado y llamamos al Enter
-        switch (newState)
+        //          En States BUSCA el state, EN DONDE el state.gameState sea igual a newState    
+        currentState = states.Find(state => state.gameState == newState);
+        // el de arriba y abajo son iguales, elegir uno.
+        foreach (IState state in states)
         {
-            case GameState.MainMenu:
-                currentState = new MainMenuState();
+            if (state.gameState == newState)
+            {
+                currentState = state;
                 break;
-            case GameState.Gameplay:
-                currentState = new GameplayState();
-                break;
-            case GameState.Paused:
-                currentState = new PausedState();
-                break;
-            case GameState.GameOver:
-                currentState = new GameOverState();
-                break;
-            default:
-                Debug.LogWarning("Current state does not exist");
-                break;
+            }
         }
 
         // Llamamos al método Enter del nuevo estado
