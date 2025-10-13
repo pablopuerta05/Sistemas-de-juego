@@ -11,10 +11,11 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        states.Add(new MainMenuState());
-        states.Add(new GameplayState());
-        states.Add(new PausedState());
-        states.Add(new GameOverState());
+        states.Add(new MainMenuState(this));
+        states.Add(new GameplayState(this));
+        states.Add(new LevelUpState(this));
+        states.Add(new PausedState(this));
+        states.Add(new GameOverState(this));
 
         if (Instance == null)
         {
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
     {
         MainMenu,
         Gameplay,
+        LevelUp,
         Paused,
         GameOver
     }
@@ -44,21 +46,13 @@ public class GameManager : MonoBehaviour
     // flag to check if the game is over
     public bool isGameOver = false;
 
-    // flag to check if the player is choosing their upgrades
-    public bool choosingUpgrade;
-
-    // reference to the player's game object
-    public GameObject playerObject;
-
-    [Header("Stopwatch")]
-    public float timeLimit; // the time limit in seconds
-    private float stopwatchTime; // the current time elapsed since the stopwatch started
-    [HideInInspector] public float StopwatchTime => stopwatchTime;
+    // reference to the stopwatch
+    public Stopwatch stopwatch;
 
     private void Start()
     {
         SetGameState(GameState.MainMenu); // Establecer el estado inicial
-        UIManager.Instance.DisableScreens();
+        stopwatch = new Stopwatch();
     }
 
     private void Update()
@@ -68,58 +62,22 @@ public class GameManager : MonoBehaviour
     }
 
     // Define the method to change the state of the game
-
     public void SetGameState(GameState newState)
     {
         // Si hay un estado anterior, llamamos al Exit
         currentState?.Exit();
 
         // Establecemos el nuevo estado y llamamos al Enter
-        //          En States BUSCA el state, EN DONDE el state.gameState sea igual a newState    
+        // En States BUSCA el state, EN DONDE el state.gameState sea igual a newState    
         currentState = states.Find(state => state.gameState == newState);
-        // el de arriba y abajo son iguales, elegir uno.
-        foreach (IState state in states)
+
+        if (currentState == null)
         {
-            if (state.gameState == newState)
-            {
-                currentState = state;
-                break;
-            }
+            Debug.LogError("Estado no encontrado: " + newState);
+            return;
         }
 
         // Llamamos al método Enter del nuevo estado
         currentState.Enter();
-    }
-
-    private void UpdateStopWatch()
-    {
-        stopwatchTime += Time.deltaTime;
-
-        UIManager.Instance.UpdateStopWatchDisplay();
-
-        if (stopwatchTime >= timeLimit)
-        {
-            playerObject.SendMessage("Kill");
-        }
-    }
-
-    public void StartLevelUp()
-    {
-        //ChangeState(GameState.LevelUp);
-        playerObject.SendMessage("RemoveAndApplyUpgrades");
-    }
-
-    public void EndLevelUp()
-    {
-        choosingUpgrade = false;
-        Time.timeScale = 1;
-        //levelUpScreen.SetActive(false);
-        //ChangeState(GameState.Gameplay);
-    }
-
-    // gives us the time since the level has started
-    public float GetElapsedTime()
-    {
-        return stopwatchTime;
     }
 }

@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public class ExperienceGem : Pickup
 {
@@ -17,9 +14,7 @@ public class ExperienceGem : Pickup
             base.Collect();
         }
 
-        PlayerStats player = FindObjectOfType<PlayerStats>();
+        PlayerStats player = FindAnyObjectByType<PlayerStats>();
         player.IncreaseExperience(experienceGranted);
     }
-
-    
 }

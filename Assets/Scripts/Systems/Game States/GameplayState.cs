@@ -1,54 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static GameManager;
 
 public class GameplayState : IState
 {
-    public string Name { get => "MainMenu State"; }
+    [HideInInspector] public string Name { get => "MainMenu State"; }
     public GameManager.GameState gameState { get => GameManager.GameState.Gameplay; }
+
     private GameManager gameManager;
 
     // Constructor de la clase
-    public GameplayState()
+    public GameplayState(GameManager gm)
     {
-        gameManager = GameManager.Instance;
+        gameManager = gm;
     }
 
     public void Enter()
     {
-        throw new System.NotImplementedException();
+        Time.timeScale = 1f;
     }
 
     public void Exit()
     {
-        throw new System.NotImplementedException();
+        Time.timeScale = 0f;
     }
 
     public void Update()
     {
-        //CheckForPauseAndResume();
+        CheckForPause();
+        gameManager.stopwatch.UpdateStopWatch();
     }
 
-    //// Define the method to check for pause and resume input
-    //private void CheckForPauseAndResume()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Escape))
-    //    {
-    //        if (currentState == GameState.Paused)
-    //        {
-    //            ResumeGame();
-    //        }
-    //        else
-    //        {
-    //            PauseGame();
-    //        }
-    //    }
-    //}
+    private void CheckForPause()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            gameManager.SetGameState(GameManager.GameState.Paused);
 
-    //private void DisableScreens()
-    //{
-    //    pauseScreen.SetActive(false);
-    //    resultScreen.SetActive(false);
-    //}
+            if (gameManager.currentState.gameState == GameManager.GameState.Paused)
+            {
+                Debug.Log("El juego está en pausa.");
+            }
+        }
+    }
 }

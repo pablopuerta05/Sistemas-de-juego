@@ -2,17 +2,16 @@ using UnityEngine;
 
 public class MainMenuState : IState
 {
-    public string Name { get => "MainMenu State"; }
+    [HideInInspector] public string Name { get => "MainMenu State"; }
     public GameManager.GameState gameState { get => GameManager.GameState.MainMenu; }
 
     private GameManager gameManager;
 
     // Constructor de la clase
-    public MainMenuState()
+    public MainMenuState(GameManager gm)
     {
-        gameManager = GameManager.Instance;
+        gameManager = gm;
     }
-
 
     public void Enter()
     {
@@ -26,9 +25,6 @@ public class MainMenuState : IState
 
     public void Update()
     {
-        //if (Time.timeScale == 1f)
-        //{
-        //    gameManager.SetGameState(GameManager.GameState.Gameplay);
-        //}
+        
     }
 }

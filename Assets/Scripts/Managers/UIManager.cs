@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -21,7 +20,7 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        DontDestroyOnLoad(gameObject);
+        //DontDestroyOnLoad(gameObject);
     }
 
     #endregion
@@ -50,6 +49,9 @@ public class UIManager : MonoBehaviour
     [Header("Stopwatch")]
     public TMP_Text stopwatchDisplay;
 
+    [Header("ASync Loader")]
+    [SerializeField] private ASyncLoader asyncLoader;
+
     public void DisableScreens()
     {
         pauseScreen.SetActive(false);
@@ -57,13 +59,94 @@ public class UIManager : MonoBehaviour
         levelUpScreen.SetActive(false);
     }
 
+    #region OnActionButton
+
+    public void OnPauseButtonClicked()
+    {
+        GameManager.Instance.SetGameState(GameManager.GameState.Paused);
+    }
+
+    public void OnResumeGameClicked()
+    {
+        GameManager.Instance.SetGameState(GameManager.GameState.Gameplay);
+    }
+
+    public void OnMainMenuButtonClicked()
+    {
+        //asyncLoader.LoadLevelBtn("MainMenu");
+        GameManager.Instance.SetGameState(GameManager.GameState.MainMenu);
+    }
+
+    public void OnRestartButtonClicked()
+    {
+        asyncLoader.LoadLevelBtn("GameScene");
+        GameManager.Instance.SetGameState(GameManager.GameState.Gameplay);
+        resultScreen.SetActive(false);
+    }
+
+    #endregion
+
     public void UpdateStopWatchDisplay()
     {
         // calculate the number of minutes and seconds that have elapsed
-        int minutes = Mathf.FloorToInt(GameManager.Instance.StopwatchTime / 60);
-        int seconds = Mathf.FloorToInt(GameManager.Instance.StopwatchTime % 60);
+        int minutes = Mathf.FloorToInt(GameManager.Instance.stopwatch.StopwatchTime / 60);
+        int seconds = Mathf.FloorToInt(GameManager.Instance.stopwatch.StopwatchTime % 60);
 
         // update the stopwatch text to display the elapsed time
         stopwatchDisplay.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+    public void AssignChosenCharacterUI(CharacterData chosenCharacterData)
+    {
+        chosenCharacterImage.sprite = chosenCharacterData.Icon;
+        chosenCharacterName.text = chosenCharacterData.Name;
+    }
+
+    public void AssignLevelReachedUI(int levelReachedData)
+    {
+        LevelReachedDisplay.text = levelReachedData.ToString();
+    }
+
+    public void AssignChosenWeaponsAndPassiveItemsUI(List<Image> chosenWeaponsData, List<Image> chosenPassiveItemsData)
+    {
+        if (chosenWeaponsData.Count != chosenWeaponsUI.Count || chosenPassiveItemsData.Count != chosenPassiveItemsUI.Count)
+        {
+            Debug.LogWarning("Chosen weapons and passive items data lists have different lengths");
+            return;
+        }
+
+        // assign chosen weapons data to chosenWeaponsUI
+        for (int i = 0; i < chosenWeaponsUI.Count; i++)
+        {
+            // check that the sprite of the corresponding element in chosenWeaponsData is not null
+            if (chosenWeaponsData[i].sprite)
+            {
+                // enable the corresponding element in chosenWeaponsUI and set it's sprite to the corresponding sprite in chosenWeaponsData
+                chosenWeaponsUI[i].enabled = true;
+                chosenWeaponsUI[i].sprite = chosenWeaponsData[i].sprite;
+            }
+            else
+            {
+                // if the sprite is null, disable the corresponding element in chosenWeaponsUI
+                chosenWeaponsUI[i].enabled = false;
+            }
+        }
+
+        // assign chosen passive item data to chosenPassiveItemUI
+        for (int i = 0; i < chosenPassiveItemsUI.Count; i++)
+        {
+            // check that the sprite of the corresponding element in chosenPassiveItemsData is not null
+            if (chosenPassiveItemsData[i].sprite)
+            {
+                // enable the corresponding element in chosenPassiveItemsUI and set it's sprite to the corresponding sprite in chosenPassiveItemsData
+                chosenPassiveItemsUI[i].enabled = true;
+                chosenPassiveItemsUI[i].sprite = chosenPassiveItemsData[i].sprite;
+            }
+            else
+            {
+                // if the sprite is null, disable the corresponding element in chosenPassiveItemsUI
+                chosenPassiveItemsUI[i].enabled = false;
+            }
+        }
     }
 }

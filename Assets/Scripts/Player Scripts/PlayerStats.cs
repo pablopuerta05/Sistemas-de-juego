@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -244,7 +243,7 @@ public class PlayerStats : MonoBehaviour
 
             UpdateLevelText();
 
-            GameManager.Instance.StartLevelUp();
+            GameManager.Instance.SetGameState(GameManager.GameState.LevelUp);
         }
     }
 
@@ -295,9 +294,9 @@ public class PlayerStats : MonoBehaviour
     {
         if (!GameManager.Instance.isGameOver)
         {
-            //UIManager.Instance.AssignLevelReachedUI(level);
-            //UIManager.Instance.AssignChosenWeaponsAndPassiveItemsUI(inventory.weaponUISlots, inventory.passiveItemUISlots);
-            //GameManager.Instance.GameOver();
+            UIManager.Instance.AssignLevelReachedUI(level);
+            UIManager.Instance.AssignChosenWeaponsAndPassiveItemsUI(inventory.weaponUISlots, inventory.passiveItemUISlots);
+            GameManager.Instance.SetGameState(GameManager.GameState.GameOver);
         }
     }
 

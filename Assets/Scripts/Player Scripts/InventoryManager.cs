@@ -56,9 +56,9 @@ public class InventoryManager : MonoBehaviour
         weaponUISlots[slotIndex].enabled = true; // enable the image component
         weaponUISlots[slotIndex].sprite = weapon.weaponData.Icon;
 
-        if (GameManager.Instance != null && GameManager.Instance.choosingUpgrade)
+        if (GameManager.Instance != null && GameManager.Instance.currentState.gameState == GameManager.GameState.LevelUp)
         {
-            GameManager.Instance.EndLevelUp();
+            GameManager.Instance.SetGameState(GameManager.GameState.Gameplay);
         }
     }
 
@@ -69,9 +69,9 @@ public class InventoryManager : MonoBehaviour
         passiveItemUISlots[slotIndex].enabled = true; // enable the image component
         passiveItemUISlots[slotIndex].sprite = passiveItem.passiveItemData.Icon;
 
-        if (GameManager.Instance != null && GameManager.Instance.choosingUpgrade)
+        if (GameManager.Instance != null && GameManager.Instance.currentState.gameState == GameManager.GameState.LevelUp)
         {
-            GameManager.Instance.EndLevelUp();
+            GameManager.Instance.SetGameState(GameManager.GameState.Gameplay);
         }
     }
 
@@ -95,9 +95,9 @@ public class InventoryManager : MonoBehaviour
 
             weaponUpgradeOptions[upgradeIndex].WeaponData = upgradedWeapon.GetComponent<WeaponController>().weaponData;
 
-            if (GameManager.Instance != null && GameManager.Instance.choosingUpgrade)
+            if (GameManager.Instance != null && GameManager.Instance.currentState.gameState == GameManager.GameState.LevelUp)
             {
-                GameManager.Instance.EndLevelUp();
+                GameManager.Instance.SetGameState(GameManager.GameState.Gameplay);
             }
         }
     }
@@ -122,9 +122,9 @@ public class InventoryManager : MonoBehaviour
 
             passiveItemUpgradeOptions[upgradeIndex].PassiveItemData = upgradedPassiveItem.GetComponent<PassiveItem>().passiveItemData;
 
-            if (GameManager.Instance != null && GameManager.Instance.choosingUpgrade)
+            if (GameManager.Instance != null && GameManager.Instance.currentState.gameState == GameManager.GameState.LevelUp)
             {
-                GameManager.Instance.EndLevelUp();
+                GameManager.Instance.SetGameState(GameManager.GameState.Gameplay);
             }
         }
     }
