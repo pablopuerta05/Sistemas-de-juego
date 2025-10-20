@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Ring Event Data", menuName = "2D Top-Down Rogue-like/Event Data/Ring")]
@@ -11,8 +9,13 @@ public class RingEventData : EventData
     [Min(0)] public float spawnRadius = 10f;
     [Min(0)] public float lifespan = 15f;
 
+    private IItemFactory enemiesFactory;
+
     public override bool Activate(PlayerStats player = null, bool alwaysFires = false)
     {
+        // preguntar por esta linea
+        enemiesFactory = new EnemiesFactory();
+
         // only activate this if the player is present
         if (player)
         {
@@ -32,7 +35,7 @@ public class RingEventData : EventData
                 }
 
                 // then spawn the enemy
-                GameObject s = Instantiate(g, spawnPosition, Quaternion.identity);
+                GameObject s = enemiesFactory.Create(g, spawnPosition, Quaternion.identity);
 
                 // if there is a lifespan on the mob, set them to be destroyed
                 if (lifespan > 0)

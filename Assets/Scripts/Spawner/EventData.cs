@@ -21,7 +21,7 @@ public abstract class EventData : SpawnData
             return false;
         }
 
-        if (GameManager.Instance.GetElapsedTime() > activeAfter)
+        if (GameManager.Instance.stopwatch.GetElapsedTime() > activeAfter)
         {
             return true;
         }
@@ -38,11 +38,11 @@ public abstract class EventData : SpawnData
             return true;
         }
 
-        // otherwise, get a random number and see if we pass the probability test
-        //if (probability / Mathf.Max(1, (s.Stats.luck * luckFactor)) >= Random.Range(0f, 1f))
-        //{
-        //    return true;
-        //}
+        //otherwise, get a random number and see if we pass the probability test
+        if (probability / Mathf.Max(1, (s.Luck * luckFactor)) >= Random.Range(0f, 1f))
+        {
+            return true;
+        }
 
         return false;
     }

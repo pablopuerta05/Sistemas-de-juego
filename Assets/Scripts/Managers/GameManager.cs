@@ -49,6 +49,9 @@ public class GameManager : MonoBehaviour
     // reference to the stopwatch
     public Stopwatch stopwatch;
 
+    // Level up event delegate to start the level up (better than SendMessage())
+    public event System.Action OnLevelUpApplied;
+
     private void Start()
     {
         SetGameState(GameState.MainMenu); // Establecer el estado inicial
@@ -79,5 +82,10 @@ public class GameManager : MonoBehaviour
 
         // Llamamos al método Enter del nuevo estado
         currentState.Enter();
+    }
+
+    public void TriggerLevelUp()
+    {
+        OnLevelUpApplied?.Invoke();
     }
 }

@@ -17,7 +17,8 @@ public class LevelUpState : IState
     {
         Time.timeScale = 0f;
         UIManager.Instance.levelUpScreen.SetActive(true);
-        //playerObject.SendMessage("RemoveAndApplyUpgrades");
+        // llamo al Level up a traves de un evento
+        gameManager.TriggerLevelUp();
     }
 
     public void Exit()
@@ -28,6 +29,6 @@ public class LevelUpState : IState
 
     public void Update()
     {
-        throw new System.NotImplementedException();
+        
     }
 }

@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Wave Data", menuName = "2D Top-Down Rogue-like/Wave Data")]
-
 public class WaveData : SpawnData
 {
     [Header("Wave Data")]

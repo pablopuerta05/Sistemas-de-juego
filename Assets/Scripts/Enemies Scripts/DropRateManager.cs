@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DropRateManager : MonoBehaviour
 {
     [System.Serializable] // serialize the class
-
     public class Drops
     {
         public string name;
@@ -16,14 +14,17 @@ public class DropRateManager : MonoBehaviour
     public bool active = false;
     public List<Drops> drops;
 
+    private IItemFactory gemFactory;
+
+    private void Awake()
+    {
+        // Si no se asigna desde afuera, usar una por defecto
+        gemFactory = new ExperienceGemsFactory();
+    }
+
     private void OnDestroy()
     {
-        if (!active)
-        {
-            return;
-        }
-
-        if (!gameObject.scene.isLoaded) // stops the spawning error from appearing when stopping play mode
+        if (!active || !gameObject.scene.isLoaded) // stops the spawning error from appearing when stopping play mode
         {
             return;
         }
@@ -43,7 +44,7 @@ public class DropRateManager : MonoBehaviour
         if (possibleDrops.Count > 0)
         {
             Drops drops = possibleDrops[UnityEngine.Random.Range(0, possibleDrops.Count)];
-            Instantiate(drops.itemPrefab, transform.position, Quaternion.identity);
+            gemFactory.Create(drops.itemPrefab, transform.position, Quaternion.identity); // get an object from the factory
         }
     }
 }

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
@@ -16,25 +14,15 @@ public class SpawnManager : MonoBehaviour
     private float spawnTimer; // timer used to determine when to spawn the next group of enemy
     private float currentWaveDuration;
 
-    #region Singleton
+    public Camera ReferenceCamera => referenceCamera;
+    public int MaximumEnemyCount => maximumEnemyCount;
 
-    public static SpawnManager instance;
+    private IItemFactory enemiesFactory;
 
     private void Awake()
     {
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-
-        //DontDestroyOnLoad(gameObject);
+        enemiesFactory = new EnemiesFactory();
     }
-
-    #endregion
 
     private void Update()
     {
@@ -80,7 +68,7 @@ public class SpawnManager : MonoBehaviour
                 }
 
                 // spawn the enemy
-                Instantiate(prefab, GeneratePosition(), Quaternion.identity);
+                enemiesFactory.Create(prefab, GeneratePosition(), Quaternion.identity);
                 currentWaveSpawnCount++;
             }
 
@@ -98,14 +86,16 @@ public class SpawnManager : MonoBehaviour
             return false;
         }
 
+        WaveData currentWave = data[currentWaveIndex];
+
         // do not spawn if we exceeded the max spawns for the wave
-        if (instance.currentWaveSpawnCount > instance.data[instance.currentWaveIndex].totalSpawns)
+        if (currentWaveSpawnCount > currentWave.totalSpawns)
         {
             return false;
         }
 
         // do not spawn if we exceeded the wave's duration
-        if (instance.currentWaveDuration > instance.data[instance.currentWaveIndex].duration)
+        if (currentWaveDuration > currentWave.duration)
         {
             return false;
         }
@@ -114,19 +104,9 @@ public class SpawnManager : MonoBehaviour
     }
 
     // allows other scripts to check if we have exceeded the maximum number of enemies
-    public static bool HasExceededMaxEnemies()
+    public bool HasExceededMaxEnemies()
     {
-        if (!instance)
-        {
-            return false; // if there is no spawn manager, don't limit max enemies
-        }
-
-        if (EnemyStats.count > instance.maximumEnemyCount)
-        {
-            return true;
-        }
-
-        return false;
+        return EnemyStats.count > maximumEnemyCount;
     }
 
     public bool HasWaveEnded()
@@ -167,16 +147,16 @@ public class SpawnManager : MonoBehaviour
     }
 
     // creates a new location where we can place the enemy at
-    public static Vector3 GeneratePosition()
+    public Vector3 GeneratePosition()
     {
         // if there is no reference camera, then get one
-        if (!instance.referenceCamera)
+        if (!referenceCamera)
         {
-            instance.referenceCamera = Camera.main;
+            referenceCamera = Camera.main;
         }
 
         // give a warning if the camera is not ortographic
-        if (!instance.referenceCamera.orthographic)
+        if (!referenceCamera.orthographic)
         {
             Debug.LogWarning("The reference camera is not ortographic, this will cause enemy spawns to appear within camera boundaries");
         }
@@ -189,19 +169,19 @@ public class SpawnManager : MonoBehaviour
         switch (Random.Range(0, 2))
         {
             case 0:
-                return instance.referenceCamera.ViewportToWorldPoint(new Vector3(Mathf.Round(x), y));
+                return referenceCamera.ViewportToWorldPoint(new Vector3(Mathf.Round(x), y));
             case 1:
-                return instance.referenceCamera.ViewportToWorldPoint(new Vector3(x, Mathf.Round(y)));
+                return referenceCamera.ViewportToWorldPoint(new Vector3(x, Mathf.Round(y)));
             default:
-                return instance.referenceCamera.ViewportToWorldPoint(new Vector3(Mathf.Round(x), y));
+                return referenceCamera.ViewportToWorldPoint(new Vector3(Mathf.Round(x), y));
         }
     }
 
     // checking if the enemy is within the camera's boundaries
-    public static bool IsWithinBoundaries(Transform checkedObject)
+    public bool IsWithinBoundaries(Transform checkedObject)
     {
         // get the camera to check if we are within boundaries
-        Camera camera = instance && instance.referenceCamera ? instance.referenceCamera : Camera.main;
+        Camera camera = referenceCamera ? referenceCamera : Camera.main;
 
         Vector2 viewport = camera.WorldToViewportPoint(checkedObject.position);
         

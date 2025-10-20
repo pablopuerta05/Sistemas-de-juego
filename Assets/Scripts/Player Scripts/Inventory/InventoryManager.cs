@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -43,10 +42,22 @@ public class InventoryManager : MonoBehaviour
     public List<UpgradeUI> upgradeUIOptions = new List<UpgradeUI>(); // list of UI for upgrade options present in the scene
 
     private PlayerStats player;
+    private PlayerInventory playerInventory;
 
     private void Start()
     {
         player = GetComponent<PlayerStats>();
+        playerInventory = GetComponent<PlayerInventory>();
+    }
+
+    private void OnEnable()
+    {
+        GameManager.Instance.OnLevelUpApplied += RemoveAndApplyUpgrades;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.OnLevelUpApplied -= RemoveAndApplyUpgrades;
     }
 
     public void AddWeapon(int slotIndex, WeaponController weapon) // add a weapon to a specific slot
@@ -196,7 +207,7 @@ public class InventoryManager : MonoBehaviour
 
                     if (newWeapon) // spawn a new weapon
                     {
-                        upgradeOption.upgradeButton.onClick.AddListener(() => player.SpawnWeapon(chosenWeaponUpgrade.initialWeapon)); // apply button functionality
+                        upgradeOption.upgradeButton.onClick.AddListener(() => playerInventory.SpawnWeapon(chosenWeaponUpgrade.initialWeapon)); // apply button functionality
                         // apply initial description and name
                         upgradeOption.upgradeDescriptionDisplay.text = chosenWeaponUpgrade.WeaponData.Description;
                         upgradeOption.upgradeNameDisplay.text = chosenWeaponUpgrade.WeaponData.Name;
@@ -244,7 +255,7 @@ public class InventoryManager : MonoBehaviour
 
                     if (newPassiveItem)
                     {
-                        upgradeOption.upgradeButton.onClick.AddListener(() => player.SpawnPassiveItem(chosenPassiveItemUpgrade.initialPassiveItem));
+                        upgradeOption.upgradeButton.onClick.AddListener(() => playerInventory.SpawnPassiveItem(chosenPassiveItemUpgrade.initialPassiveItem));
                         upgradeOption.upgradeDescriptionDisplay.text = chosenPassiveItemUpgrade.PassiveItemData.Description;
                         upgradeOption.upgradeNameDisplay.text = chosenPassiveItemUpgrade.PassiveItemData.Name;
                     }

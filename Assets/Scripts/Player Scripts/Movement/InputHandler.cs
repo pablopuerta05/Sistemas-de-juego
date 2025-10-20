@@ -1,36 +1,27 @@
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class InputHandler : MonoBehaviour
 {
-    [SerializeField] private float moveSpeed;
-
+    private ICommand moveCommand;
     [HideInInspector] public Vector2 moveDir;
     [HideInInspector] public float lastHorizontalVector;
     [HideInInspector] public float lastVerticalVector;
     [HideInInspector] public Vector2 lastMovedVector;
 
-    //References
-    Rigidbody2D rb;
-    PlayerStats player;
-
-    void Start()
+    private void Start()
     {
-        player = GetComponent<PlayerStats>();
-        rb = GetComponent<Rigidbody2D>();
+        PlayerMovement playerMovement = FindAnyObjectByType<PlayerMovement>();
+        moveCommand = new MoveCommand(playerMovement, this);
+
         lastMovedVector = new Vector2(1, 0f); //If we don't do this and game starts up and don't move, the projectile weapon will have no momentum
     }
 
-    void Update()
+    private void Update()
     {
         InputManagement();
     }
 
-    void FixedUpdate()
-    {
-        Move();
-    }
-
-    void InputManagement()
+    private void InputManagement()
     {
         if (GameManager.Instance.isGameOver)
         {
@@ -58,15 +49,7 @@ public class PlayerMovement : MonoBehaviour
         {
             lastMovedVector = new Vector2(lastHorizontalVector, lastVerticalVector);    //While moving
         }
-    }
 
-    void Move()
-    {
-        if (GameManager.Instance.isGameOver)
-        {
-            return;
-        }
-
-        rb.velocity = new Vector2(moveDir.x * player.CurrentMoveSpeed, moveDir.y * player.CurrentMoveSpeed);
+        moveCommand.Execute(); 
     }
 }

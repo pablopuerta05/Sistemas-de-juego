@@ -20,8 +20,8 @@ public abstract class Item : MonoBehaviour
         //evolutionData = data.evolutionData;
 
         // We have to find a better way to reference the player inventory in future, as this is inefficient.
-        inventory = FindObjectOfType<PlayerInventory>();
-        owner = FindObjectOfType<PlayerStats>();
+        inventory = FindAnyObjectByType<PlayerInventory>();
+        owner = FindAnyObjectByType<PlayerStats>();
     }
 
     public virtual ItemData.Evolution[] CanEvolve()
@@ -53,12 +53,12 @@ public abstract class Item : MonoBehaviour
         // checks to see if all the catalysts are in the inventory
         foreach (ItemData.Evolution.Config c in evolution.catalysts)
         {
-            Item item = inventory.Get(c.itemType);
-            if (!item || item.currentLevel < c.level)
-            {
-                Debug.LogWarning(string.Format("Evolution failed. Missing {0}", c.itemType.name));
-                return false;
-            }
+            //Item item = inventory.Get(c.itemType);
+            //if (!item || item.currentLevel < c.level)
+            //{
+            //    Debug.LogWarning(string.Format("Evolution failed. Missing {0}", c.itemType.name));
+            //    return false;
+            //}
         }
 
         return true;
@@ -81,28 +81,28 @@ public abstract class Item : MonoBehaviour
         {
             if (c.itemType is PassiveData && consumePassives)
             {
-                inventory.Remove(c.itemType, true);
+                //inventory.Remove(c.itemType, true);
             }
 
             if (c.itemType is WeaponData && consumeWeapons)
             {
-                inventory.Remove(c.itemType, true);
+                //inventory.Remove(c.itemType, true);
             }
         }
 
         // Should we consume ourselves as well?
         if (this is Passive && consumePassives)
         {
-            inventory.Remove((this as Passive).data, true);
+            //inventory.Remove((this as Passive).data, true);
         }
 
         if (this is Weapon && consumeWeapons)
         {
-            inventory.Remove((this as Weapon).data, true);
+            //inventory.Remove((this as Weapon).data, true);
         }
 
         // Add the new weapon onto our inventory
-        inventory.Add(evolutionData.outcome.itemType);
+        //inventory.Add(evolutionData.outcome.itemType);
         return true;
     }
 

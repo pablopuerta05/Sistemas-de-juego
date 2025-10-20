@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCollector : MonoBehaviour
@@ -10,7 +8,7 @@ public class PlayerCollector : MonoBehaviour
 
     private void Start()
     {
-        player = FindObjectOfType<PlayerStats>();
+        player = FindAnyObjectByType<PlayerStats>();
         playerCollector = GetComponent<CircleCollider2D>();
     }
 

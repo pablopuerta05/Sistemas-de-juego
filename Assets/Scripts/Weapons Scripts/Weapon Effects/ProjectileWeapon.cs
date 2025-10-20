@@ -34,12 +34,12 @@ public class ProjectileWeapon : Weapon
     protected override bool Attack(int attackCount = 1)
     {
         // If no projectile prefab is assigned, leave a warning message.
-        if (!currentStats.projectilePrefab)
-        {
-            Debug.LogWarning(string.Format("Projectile prefab has not been set for {0}", name));
-            currentCooldown = data.baseStats.cooldown;
-            return false;
-        }
+        //if (!currentStats.projectilePrefab)
+        //{
+        //    Debug.LogWarning(string.Format("Projectile prefab has not been set for {0}", name));
+        //    currentCooldown = data.baseStats.cooldown;
+        //    return false;
+        //}
 
         // Can we attack?
         if (!CanAttack())
@@ -51,9 +51,9 @@ public class ProjectileWeapon : Weapon
         float spawnAngle = GetSpawnAngle();
 
         // And spawn a copy of the projectile
-        Projectile prefab = Instantiate(currentStats.projectilePrefab, owner.transform.position + (Vector3)GetSpawnOffset(spawnAngle), Quaternion.Euler(0, 0, spawnAngle));
-        prefab.weapon = this;
-        prefab.owner = owner;
+        //Projectile prefab = Instantiate(currentStats.projectilePrefab, owner.transform.position + (Vector3)GetSpawnOffset(spawnAngle), Quaternion.Euler(0, 0, spawnAngle));
+        //prefab.weapon = this;
+        //prefab.owner = owner;
 
         // Reset the cooldown only if this attack was triggered by cooldown
         if (currentCooldown <= 0)
@@ -76,7 +76,8 @@ public class ProjectileWeapon : Weapon
     // Gets which direction the projectile should face when spawning.
     protected virtual float GetSpawnAngle()
     {
-        return Mathf.Atan2(movement.lastMovedVector.y, movement.lastMovedVector.x) * Mathf.Rad2Deg;
+        //return Mathf.Atan2(movement.lastMovedVector.y, movement.lastMovedVector.x) * Mathf.Rad2Deg;
+        return 0;
     }
 
     // Generates a random point to spawn the projectile on, and rotates the facing of the point by spawnAngle.

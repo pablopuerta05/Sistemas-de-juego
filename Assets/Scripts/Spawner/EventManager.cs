@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EventManager : MonoBehaviour
 {
-    private float currentEventCooldown = 0;
-
+    [Header("Event Settings")]
     public EventData[] events;
 
     [Tooltip("how long to wait before this becomes active")]
@@ -14,31 +12,29 @@ public class EventManager : MonoBehaviour
     [Tooltip("how long to wait between each event")]
     public float triggerInterval = 30f;
 
-    public static EventManager instance;
-
     [System.Serializable]
-    public class Event
+    private class ActiveEvent
     {
         public EventData data;
 
         public float duration;
-        public float cooldown = 0;
+        public float cooldown;
     }
-
-    List<Event> runningEvents = new List<Event>(); // these are events that have been activated, and are running
-
-    PlayerStats[] allPlayers;
+    
+    private float currentEventCooldown = 0;
+    private List<ActiveEvent> runningEvents = new List<ActiveEvent>(); // these are events that have been activated, and are running
+    [SerializeField] private PlayerStats player;
 
     private void Start()
     {
-        if (instance)
-        {
-            Debug.LogWarning("there is more than 1 spawn manager in the scene");
-        }
-
-        instance = this;
         currentEventCooldown = firstTriggerDelay > 0 ? firstTriggerDelay : triggerInterval;
-        allPlayers = FindObjectsOfType<PlayerStats>();
+
+        // fallback in case Initialize() wasn’t called
+        if (player = null)
+        {
+            Debug.LogWarning("EventManager: no player was assigned, finding him automatically.");
+            player = FindAnyObjectByType<PlayerStats>();
+        }
     }
 
     private void Update()
@@ -49,48 +45,56 @@ public class EventManager : MonoBehaviour
         if (currentEventCooldown <= 0)
         {
             // get an event and try to execute it
-            EventData e = GetRandomEvent();
-
-            if (e && e.CheckIfWillHappen(allPlayers[Random.Range(0, allPlayers.Length)]))
-            {
-                runningEvents.Add(new Event { data = e, duration = e.duration });
-            }
+            TriggerRandomEvent();
 
             // set the cooldown for the event
             currentEventCooldown = triggerInterval;
         }
 
+        UpdateRunningEvents();
+    }
+
+    private void TriggerRandomEvent()
+    {
+        EventData e = GetRandomEvent();
+        if (e == null) return;
+
+        if (e.CheckIfWillHappen(player))
+        {
+            runningEvents.Add(new ActiveEvent { data = e, duration = e.duration, cooldown = 0f });
+        }
+    }
+
+    private void UpdateRunningEvents()
+    {
         // events that we want to remove
-        List<Event> toRemove = new List<Event>();
+        List<ActiveEvent> expiredEvents = new List<ActiveEvent>();
 
         // cooldown for existing event to see if they should continue running
-        foreach (Event e in runningEvents)
+        foreach (ActiveEvent e in runningEvents)
         {
             // reduce the current duration
             e.duration -= Time.deltaTime;
 
             if (e.duration <= 0)
             {
-                toRemove.Add(e);
+                expiredEvents.Add(e);
                 continue;
             }
 
             // reduce the current cooldown
             e.cooldown -= Time.deltaTime;
-
             if (e.cooldown <= 0)
             {
-                // pick a random player to sic this mob on, then reset the cooldown
-                e.data.Activate(allPlayers[Random.Range(0, allPlayers.Length)]);
+                // pick player to sic this mob on, then reset the cooldown
+                e.data.Activate(player);
                 e.cooldown = e.data.GetSpawnInterval();
-            }    
+            }
         }
 
         // remove all the events that have expired
-        foreach (Event e in toRemove)
-        {
+        foreach (ActiveEvent e in expiredEvents)
             runningEvents.Remove(e);
-        }
     }
 
     public EventData GetRandomEvent()

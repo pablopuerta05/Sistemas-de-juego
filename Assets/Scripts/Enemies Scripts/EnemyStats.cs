@@ -1,14 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
 public class EnemyStats : MonoBehaviour
 {
-    //public EnemyScriptableObject EnemyData;
-
-    Transform player;
-
     public static int count; // track the number of enemies on the screen
 
     // Current stats
@@ -24,33 +19,21 @@ public class EnemyStats : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     EnemyMovement movement;
 
+    private FloatingTextGenerator textGenerator;
+
     private void Awake()
     {
         count++;
-
-        // assing the variables
-        //currentMoveSpeed = EnemyData.MoveSpeed;
-        //currentHealth = EnemyData.MaxHealth;
-        //currentDamage = EnemyData.Damage;
+        textGenerator = new FloatingTextGenerator();
     }
 
     private void Start()
     {
-        player = FindObjectOfType<PlayerMovement>().transform;
         spriteRenderer = GetComponent<SpriteRenderer>();
         originalColor = spriteRenderer.color;
 
         movement = GetComponent<EnemyMovement>();
     }
-
-    //private void Update()
-    //{
-    //    if (Vector2.Distance(transform.position, player.position) >= despawnDistance)
-    //    {
-    //        ReturnEnemy();
-
-    //    }
-    //}
 
     // This function always needs at least 2 values, the amount of damage dealt <dmg>, as well as where the damage is coming from, which is passed as
     // <sourcePosition> is necessary because it is used to calculate the direction of the knockback
@@ -62,7 +45,7 @@ public class EnemyStats : MonoBehaviour
         // create the text popup when the enemy takes damage
         if (dmg > 0)
         {
-            //GameManager.GenerateFloatingText(Mathf.FloorToInt(dmg).ToString(), transform);
+            textGenerator.ShowFloatingText(Mathf.FloorToInt(dmg).ToString(), transform);
         }
 
         // apply knockback if it is not 0
@@ -123,7 +106,7 @@ public class EnemyStats : MonoBehaviour
         // reference the script from the collided collider and deal damage using TakeDamage()
         if (collision.gameObject.CompareTag("Player"))
         {
-            PlayerStats player = collision.gameObject.GetComponent<PlayerStats>();
+            PlayerHealth player = collision.gameObject.GetComponent<PlayerHealth>();
             player.TakeDamage(currentDamage); // make sure to use current damage instead of weaponData.Damage
         }
     }
@@ -132,10 +115,4 @@ public class EnemyStats : MonoBehaviour
     {
         count--;
     }
-
-    //    void ReturnEnemy()
-    //    {
-    //        EnemySpawner es = FindObjectOfType<EnemySpawner>();
-    //        transform.position = player.position + es.transform.position;
-    //    }
 }

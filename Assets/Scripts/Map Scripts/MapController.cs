@@ -1,38 +1,72 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MapController : MonoBehaviour
 {
-    public List<GameObject> terrainChunks;
+    [System.Serializable]
+    public class PoolDefinition
+    {
+        public GameObject prefab;
+        public int poolSize = 10;
+    }
+
+    [Header("Chunk Configuration")]
+    public List<PoolDefinition> chunkDefinitions;
     public GameObject player;
     public float checkerRadius;
     public LayerMask terrainMask;
     public GameObject currentChunk;
-    private Vector3 playerLastPosition;
 
-    //[Header("Optimization")]
-    public List<GameObject> spawnedChunks;
-    private GameObject LatestChunk;
-    //public float maxOpDist; //Must be greater than the lenght and width of the tilemap
-    //private float opDist;
-    //private float optimizerCooldown;
-    //[SerializeField] private float optimizerCooldownDur;
+    [Header("Optimization")]
+    public float maxOpDist; //Must be greater than the lenght and width of the tilemap
+    private float opDist;
+    [SerializeField] private float optimizerCooldownDur;
+
+    private Vector3 playerLastPosition;
+    private float optimizerCooldown;
+
+    private List<GameObject> activeChunks = new List<GameObject>();
+    private Transform chunkParent;
+    private HashSet<Vector3> spawnedPositions = new HashSet<Vector3>();
+
+    private List<ChunkPool> chunkPools = new List<ChunkPool>();
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        playerLastPosition = player.transform.position; ;
+        if (player == null)
+        {
+            Debug.LogError("Player no asignado en MapController.");
+        }
+
+        if (chunkDefinitions == null || chunkDefinitions.Count == 0)
+        {
+            Debug.LogError("No hay definiciones de chunks asignadas en MapController.");
+        }
+
+        playerLastPosition = player.transform.position;
+        chunkParent = new GameObject("Chunks").transform;
+
+        foreach (PoolDefinition def in chunkDefinitions)
+        {
+            ChunkPool pool = new ChunkPool
+            {
+                prefab = def.prefab,
+                poolSize = def.poolSize
+            };
+            pool.Initialize(chunkParent);
+            chunkPools.Add(pool);
+        }
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        chunkChecker();
-        //chunkOptimizer();
+        ChunkChecker();
+        ChunkOptimizer();
     }
 
-    void chunkChecker()
+    private void ChunkChecker()
     {
         if (!currentChunk)
         {
@@ -42,38 +76,39 @@ public class MapController : MonoBehaviour
         Vector3 moveDir = player.transform.position - playerLastPosition;
         playerLastPosition = player.transform.position;
 
-        string directionName = GetDirectionName(moveDir);
+        string primaryDirection = GetDirectionName(moveDir);
 
-        CheckAndSpawnChunk(directionName);
+        HashSet<string> directionsToCheck = new HashSet<string> { primaryDirection };
 
-        // Check additional adjacent directions for diagonal chunks
-        if (directionName.Contains("Up"))
+        if (primaryDirection.Contains("Up")) directionsToCheck.Add("Up");
+        if (primaryDirection.Contains("Down")) directionsToCheck.Add("Down");
+        if (primaryDirection.Contains("Left")) directionsToCheck.Add("Left");
+        if (primaryDirection.Contains("Right")) directionsToCheck.Add("Right");
+
+        foreach (string dir in directionsToCheck)
         {
-            CheckAndSpawnChunk("Up");
-        }
-        if (directionName.Contains("Down"))
-        {
-            CheckAndSpawnChunk("Down");
-        }
-        if (directionName.Contains("Right"))
-        {
-            CheckAndSpawnChunk("Right");
-        }
-        if (directionName.Contains("Left"))
-        {
-            CheckAndSpawnChunk("Left");
+            CheckAndSpawnChunk(dir);
         }
     }
 
-    void CheckAndSpawnChunk(string direction)
+    private void CheckAndSpawnChunk(string direction)
     {
-        if (!Physics2D.OverlapCircle(currentChunk.transform.Find(direction).position, checkerRadius, terrainMask))
+        Transform directionPoint = currentChunk.transform.Find(direction);
+        if (directionPoint == null)
         {
-            chunkSpawn(currentChunk.transform.Find(direction).position);
+            Debug.LogWarning($"No se encontró el punto de dirección '{direction}' en el chunk '{currentChunk.name}'.");
+            return;
+        }
+
+        Vector3 spawnPos = directionPoint.position;
+
+        if (!Physics2D.OverlapCircle(spawnPos, checkerRadius, terrainMask))
+        {
+            ChunkSpawn(spawnPos);
         }
     }
 
-    string GetDirectionName(Vector3 direction)
+    private string GetDirectionName(Vector3 direction)
     {
         direction = direction.normalized;
 
@@ -117,37 +152,47 @@ public class MapController : MonoBehaviour
         }
     }
 
-    void chunkSpawn(Vector3 spawnPosition)
+    private void ChunkSpawn(Vector3 spawnPosition)
     {
-        int rand = Random.Range(0, terrainChunks.Count);
-        LatestChunk = Instantiate(terrainChunks[rand], spawnPosition, Quaternion.identity);
-        spawnedChunks.Add(LatestChunk);
+        if (spawnedPositions.Contains(spawnPosition))
+        {
+            return; // Ya hay un chunk aquí (aunque esté desactivado)
+        }
+
+        int rand = Random.Range(0, chunkPools.Count);
+        GameObject chunk = chunkPools[rand].GetFromPool();
+        chunk.transform.position = spawnPosition;
+        chunk.transform.SetParent(chunkParent);
+
+        activeChunks.Add(chunk);
+        spawnedPositions.Add(spawnPosition);
+        currentChunk = chunk;
     }
 
-    //void chunkOptimizer()
-    //{
-    //    optimizerCooldown -= Time.deltaTime;
+    private void ChunkOptimizer()
+    {
+        optimizerCooldown -= Time.deltaTime;
 
-    //    if (optimizerCooldown <= 0)
-    //    {
-    //        optimizerCooldown = optimizerCooldownDur;
-    //    }
-    //    else
-    //    {
-    //        return;
-    //    }
+        if (optimizerCooldown <= 0)
+        {
+            optimizerCooldown = optimizerCooldownDur;
+        }
+        else
+        {
+            return;
+        }
 
-    //    foreach (GameObject chunk in spawnedChunks)
-    //    {
-    //        opDist = Vector3.Distance(player.transform.position, chunk.transform.position);
-    //        if (opDist > maxOpDist)
-    //        {
-    //            chunk.SetActive(false);
-    //        }
-    //        else
-    //        {
-    //            chunk.SetActive(true);
-    //        }
-    //    }
-    //}
+        foreach (GameObject chunk in activeChunks)
+        {
+            opDist = Vector3.Distance(player.transform.position, chunk.transform.position);
+            if (opDist > maxOpDist)
+            {
+                chunk.SetActive(false);
+            }
+            else
+            {
+                chunk.SetActive(true);
+            }
+        }
+    }
 }

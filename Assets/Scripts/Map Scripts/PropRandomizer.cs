@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,16 +6,16 @@ public class PropRandomizer : MonoBehaviour
     public List<GameObject> propSpawnPoints;
     public List<GameObject> propPrefabs;
 
-    // Start is called before the first frame update
+    private IItemFactory propsFactory;
+
+    private void Awake()
+    {
+        propsFactory = new PropsFactory();
+    }
+
     void Start()
     {
         spawnProps();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     void spawnProps()
@@ -24,7 +23,7 @@ public class PropRandomizer : MonoBehaviour
         foreach (GameObject sp in propSpawnPoints)
         {
             int rand = Random.Range(0, propPrefabs.Count);
-            GameObject prop = Instantiate(propPrefabs[rand], sp.transform.position, Quaternion.identity);
+            GameObject prop = propsFactory.Create(propPrefabs[rand], sp.transform.position, Quaternion.identity);
             prop.transform.parent = sp.transform;
         }
     }

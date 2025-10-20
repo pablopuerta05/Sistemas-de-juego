@@ -16,15 +16,15 @@ public class CharacterData : ScriptableObject
     public struct Stats
     {
         public float maxHealth, recovery, moveSpeed;
-        public float might, speed, magnet;
+        public float might, projectileSpeed, magnet;
 
-        public Stats(float maxHealth = 1000, float recovery = 0, float moveSpeed = 1f, float might = 1f, float speed = 1f, float magnet = 30f)
+        public Stats(float maxHealth = 1000, float recovery = 0, float moveSpeed = 1f, float might = 1f, float projectileSpeed = 1f, float magnet = 30f)
         {
             this.maxHealth = maxHealth;
             this.recovery = recovery;
             this.moveSpeed = moveSpeed;
             this.might = might;
-            this.speed = speed;
+            this.projectileSpeed = projectileSpeed;
             this.magnet = magnet;
         }
 
@@ -34,7 +34,7 @@ public class CharacterData : ScriptableObject
             s1.recovery += s2.recovery;
             s1.moveSpeed += s2.moveSpeed;
             s1.might += s2.might;
-            s1.speed += s2.speed;
+            s1.projectileSpeed += s2.projectileSpeed;
             s1.magnet += s2.magnet;
             return s1;
         }

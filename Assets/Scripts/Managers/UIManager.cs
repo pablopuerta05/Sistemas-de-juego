@@ -20,7 +20,7 @@ public class UIManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        //DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(gameObject);
     }
 
     #endregion
@@ -49,6 +49,12 @@ public class UIManager : MonoBehaviour
     [Header("Stopwatch")]
     public TMP_Text stopwatchDisplay;
 
+    [Header("UI")]
+    public Image healthBar;
+    public Image expBar;
+    public TextMeshProUGUI levelText;
+    [SerializeField] private PlayerExperience playerExperience;
+
     [Header("ASync Loader")]
     [SerializeField] private ASyncLoader asyncLoader;
 
@@ -57,6 +63,12 @@ public class UIManager : MonoBehaviour
         pauseScreen.SetActive(false);
         resultScreen.SetActive(false);
         levelUpScreen.SetActive(false);
+    }
+
+    public void DestroySingleton()
+    {
+        Instance = null;
+        Destroy(gameObject);
     }
 
     #region OnActionButton
@@ -73,12 +85,14 @@ public class UIManager : MonoBehaviour
 
     public void OnMainMenuButtonClicked()
     {
-        //asyncLoader.LoadLevelBtn("MainMenu");
+        DestroySingleton();
+        asyncLoader.LoadLevelBtn("MainMenu");
         GameManager.Instance.SetGameState(GameManager.GameState.MainMenu);
     }
 
     public void OnRestartButtonClicked()
     {
+        DestroySingleton();
         asyncLoader.LoadLevelBtn("GameScene");
         GameManager.Instance.SetGameState(GameManager.GameState.Gameplay);
         resultScreen.SetActive(false);
@@ -148,5 +162,22 @@ public class UIManager : MonoBehaviour
                 chosenPassiveItemsUI[i].enabled = false;
             }
         }
+    }
+
+    public void UpdateExpBar()
+    {
+        // update exp bal fill amount
+        expBar.fillAmount = (float)playerExperience.experience / playerExperience.experienceCap;
+    }
+
+    public void UpdateLevelText()
+    {
+        // update level text
+        levelText.text = "LV. " + playerExperience.level.ToString();
+    }
+
+    public void UpdateHealth(float health)
+    {
+        currentHealthDisplay.text = "Health: " + health;
     }
 }

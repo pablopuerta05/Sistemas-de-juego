@@ -14,7 +14,7 @@ public class ExperienceGem : Pickup
             base.Collect();
         }
 
-        PlayerStats player = FindAnyObjectByType<PlayerStats>();
+        PlayerExperience player = FindAnyObjectByType<PlayerExperience>();
         player.IncreaseExperience(experienceGranted);
     }
 }
