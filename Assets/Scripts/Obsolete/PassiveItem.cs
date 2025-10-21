@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Obsolete("dependency in PassiveItemScriptableObject")]
 public class PassiveItem : MonoBehaviour
 {
     protected PlayerStats player;
