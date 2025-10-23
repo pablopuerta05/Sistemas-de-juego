@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -54,6 +52,7 @@ public class Projectile : WeaponEffect
         float aimAngle; // we need to determine where to aim
 
         // find all enemies on the screen
+        // use another method to get the enemies, maybe a list or a pool
         EnemyStats[] targets = FindObjectsOfType<EnemyStats>();
 
         // select a random enemy (if there is at least 1). Otherwise, pick a random angle
@@ -88,9 +87,6 @@ public class Projectile : WeaponEffect
     {
         EnemyStats es = collision.GetComponent<EnemyStats>();
 
-        // the breakable props are not implemented for now.
-        // BreakableProps p = collision.GetComponent<BreakableProps>();
-
         // Only collide with enemies or breakable stuff.
         if (es)
         {
@@ -108,19 +104,6 @@ public class Projectile : WeaponEffect
                 Destroy(Instantiate(stats.hitEffect, transform.position, Quaternion.identity), 5f);
             }
         }
-        /*
-        else if (p)
-        {
-            p.TakeDamage(GetDamage());
-            piercing--;
-
-            Weapon.Stats stats = weapon.GetStats();
-            if (stats.hitEffect)
-            {
-                Destroy(Instantiate(stats.hitEffect, transform.position, Quaternion.identity), 5f);
-            }
-        }
-        */
 
         // Destroy this object if it has run out of health from hitting other stuff.
         if (piercing <= 0)

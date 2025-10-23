@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour
@@ -10,7 +8,7 @@ public abstract class Weapon : MonoBehaviour
         public string name, description;
 
         [Header("Visuals")]
-        //public Projectile projectilePrefab; // if attached, a projectile will spawn every time the weapon cools down.
+        public Projectile projectilePrefab; // if attached, a projectile will spawn every time the weapon cools down.
         //public Aura auraPrefab; // if attached, an aura will spawn when weapon is equipped.
 
         public ParticleSystem hitEffect;
@@ -28,7 +26,7 @@ public abstract class Weapon : MonoBehaviour
             Stats result = new Stats();
             result.name = s2.name ?? s1.name;
             result.description = s2.description ?? s1.description;
-            //result.projectilePrefab = s2.projectilePrefab ?? s1.projectilePrefab;
+            result.projectilePrefab = s2.projectilePrefab ?? s1.projectilePrefab;
             //result.auraPrefab = s2.auraPrefab ?? s1.projectilePrefab;
             result.hitEffect = s2.hitEffect == null ? s1.hitEffect : s2.hitEffect;
             result.spawnVariance = s2.spawnVariance;
@@ -62,17 +60,17 @@ public abstract class Weapon : MonoBehaviour
 
     protected float currentCooldown;
 
-    protected PlayerMovement movement; // reference to the player's movement
+    protected InputHandler movement; // reference to the player's movement
 
     // for dinamically created weapons, call initialise to set everything up
     public virtual void Initialise(WeaponData data)
     {
         maxLevel = data.maxLevel;
-        owner = FindObjectOfType<PlayerStats>();
+        owner = FindAnyObjectByType<PlayerStats>();
 
         this.data = data;
         currentStats = data.baseStats;
-        movement = GetComponent<PlayerMovement>();
+        movement = GetComponent<InputHandler>();
         currentCooldown = currentStats.cooldown;
     }
 

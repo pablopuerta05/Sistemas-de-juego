@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,7 +16,6 @@ public abstract class Item : MonoBehaviour
         maxLevel = data.maxLevel;
 
         // Store the evolution data as we have to track whether all the catalysts are in the inventory so we can evolve.
-        //evolutionData = data.evolutionData;
 
         // We have to find a better way to reference the player inventory in future, as this is inefficient.
         inventory = FindAnyObjectByType<PlayerInventory>();
