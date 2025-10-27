@@ -4566,6 +4566,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b4725667500bf49bd572fe634f2280, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseStats:
+    maxHealth: 0
+    recovery: 0
+    moveSpeed: 0
+    might: 0
+    projectileSpeed: 0
+    magnet: 0
+  actualStats:
+    maxHealth: 0
+    recovery: 0
+    moveSpeed: 0
+    might: 0
+    projectileSpeed: 0
+    magnet: 0
   weaponIndex: 0
   passiveItemIndex: 0
   healthBar: {fileID: 1428618538}
@@ -4613,17 +4627,8 @@ MonoBehaviour:
   - {fileID: 398923149}
   - {fileID: 385873550}
   - {fileID: 1547000673}
-  weaponUpgradeOptions:
-  - weaponUpgradeIndex: 0
-    initialWeapon: {fileID: 8471896632804722667, guid: 5196ec7836e64154894e0d9c40fa8c93, type: 3}
-    WeaponData: {fileID: 11400000, guid: d8659e1d11d0ebb4ea928cf43803caf9, type: 2}
-  passiveItemUpgradeOptions:
-  - passiveItemUpgradeIndex: 0
-    initialPassiveItem: {fileID: 4924767657941350595, guid: 909cfd258a948e240a3303deeace6de5, type: 3}
-    PassiveItemData: {fileID: 11400000, guid: 57b91d8912551a9429610eeaebd4d4d6, type: 2}
-  - passiveItemUpgradeIndex: 1
-    initialPassiveItem: {fileID: 7262038526591697577, guid: 5617fc2d270db33499703759d992a4f5, type: 3}
-    PassiveItemData: {fileID: 11400000, guid: 130576199b2c7094da67179e65b9ed8f, type: 2}
+  weaponUpgradeOptions: []
+  passiveItemUpgradeOptions: []
   upgradeUIOptions:
   - upgradeNameDisplay: {fileID: 546634592}
     upgradeDescriptionDisplay: {fileID: 1567530498}
@@ -4637,6 +4642,92 @@ MonoBehaviour:
     upgradeDescriptionDisplay: {fileID: 2056914929}
     upgradeIcon: {fileID: 1907219692}
     upgradeButton: {fileID: 1820366705}
+<<<<<<< Updated upstream
+=======
+--- !u!114 &1043873581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043873571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97f09f38a2f994e46a89cb9704f03885, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseStats:
+    maxHealth: 0
+    recovery: 0
+    moveSpeed: 0
+    might: 0
+    projectileSpeed: 0
+    magnet: 0
+  actualStats:
+    maxHealth: 0
+    recovery: 0
+    moveSpeed: 0
+    might: 0
+    projectileSpeed: 0
+    magnet: 0
+  damageEffect: {fileID: 7567293312111670122, guid: 58b0ba1a68fa2024ea23c5356175069e, type: 3}
+  invincibilityDuration: 0.5
+--- !u!114 &1043873582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043873571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6fbd6cdf79864145bc0c238d661f6bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  experience: 0
+  level: 1
+  experienceCap: 0
+  levelRanges:
+  - startLevel: 1
+    endLevel: 3
+    experienceCapIncrease: 100
+  - startLevel: 4
+    endLevel: 5
+    experienceCapIncrease: 200
+  - startLevel: 6
+    endLevel: 7
+    experienceCapIncrease: 300
+--- !u!114 &1043873584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043873571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ea357aa20edc7e4db993d18e8a9b38f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveDir: {x: 0, y: 0}
+  lastHorizontalVector: 0
+  lastVerticalVector: 0
+  lastMovedVector: {x: 0, y: 0}
+--- !u!114 &1043873585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043873571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f11ddb17d9348c4b98588d60f7e6fc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponIndex: 0
+  passiveItemIndex: 0
+>>>>>>> Stashed changes
 --- !u!1 &1046571449
 GameObject:
   m_ObjectHideFlags: 0
@@ -7719,12 +7810,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0190af23f8f38046b6bb70078b1dd9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkDefinitions: []
+  chunkDefinitions:
+  - prefab: {fileID: 2704910800252343514, guid: e9f48fbb17ea3614cb54a98189d1254c, type: 3}
+    poolSize: 100
+  - prefab: {fileID: 2704910800252343514, guid: 5871418b05449404290b60817fdc5380, type: 3}
+    poolSize: 100
+  - prefab: {fileID: 2704910800252343514, guid: 8b830ba6abd293a42a9fe89936490f3a, type: 3}
+    poolSize: 100
   player: {fileID: 1043873571}
   checkerRadius: 0.2
   terrainMask:
     serializedVersion: 2
+<<<<<<< Updated upstream
     m_Bits: 64
+=======
+    m_Bits: 8
+>>>>>>> Stashed changes
   currentChunk: {fileID: 1615780701}
   maxOpDist: 0
   optimizerCooldownDur: 0
