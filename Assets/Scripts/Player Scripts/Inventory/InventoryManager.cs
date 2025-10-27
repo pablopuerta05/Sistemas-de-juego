@@ -48,11 +48,17 @@ public class InventoryManager : MonoBehaviour
     {
         player = GetComponent<PlayerStats>();
         playerInventory = GetComponent<PlayerInventory>();
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnLevelUpApplied += RemoveAndApplyUpgrades;
     }
 
     private void OnEnable()
     {
-        GameManager.Instance.OnLevelUpApplied += RemoveAndApplyUpgrades;
+        //if (GameManager.Instance != null)
+        //    GameManager.Instance.OnLevelUpApplied += RemoveAndApplyUpgrades;
+        //else
+        //    Debug.LogWarning("GameManager.Instance es null en InventoryManager.OnEnable()");
     }
 
     private void OnDisable()

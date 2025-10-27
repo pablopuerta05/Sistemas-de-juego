@@ -176,8 +176,12 @@ public class UIManager : MonoBehaviour
         levelText.text = "LV. " + playerExperience.level.ToString();
     }
 
-    public void UpdateHealth(float health)
+    public void InitializeRuntimeUI(CharacterData data, float currentHealth)
     {
-        currentHealthDisplay.text = "Health: " + health;
+        if (data == null) return;
+
+        AssignChosenCharacterUI(data);
+        UpdateExpBar();
+        UpdateLevelText();
     }
 }

@@ -4,31 +4,28 @@ public class PlayerHealth : MonoBehaviour
 {
     private PlayerStats playerStats;
     private PlayerExperience playerExperience;
-    private CharacterData characterData;
     private InventoryManager inventory;
     public ParticleSystem damageEffect;
 
     // I-Frames
     [Header("I-Frames")]
-    public float invincibilityDuration;
+    public float invincibilityDuration = 0.5f;
     private float invincibilityTimer;
     private bool isInvincible;
 
     private void Awake()
     {
-        characterData = CharacterSelector.GetData();
+        // Recupera referencias
+        playerStats = GetComponent<PlayerStats>();
+        playerExperience = GetComponent<PlayerExperience>();
+        inventory = GetComponent<InventoryManager>();
 
-        if (characterData == null)
+        if (playerStats == null)
         {
-            Debug.LogError("Character data not found!");
+            Debug.LogError("PlayerStats not found on Player!");
+            enabled = false;
             return;
         }
-
-        CharacterSelector.instance.DestroySingleton();
-
-        playerStats = GetComponent<PlayerStats>();
-        inventory = GetComponent<InventoryManager>();
-        playerExperience = GetComponent<PlayerExperience>();
     }
 
     private void Start()
@@ -36,31 +33,9 @@ public class PlayerHealth : MonoBehaviour
         UpdateHealthBar();
     }
 
-    public void TakeDamage(float dmg)
-    {
-        if (!isInvincible)
-        {
-            playerStats.CurrentHealth -= dmg;
-
-            if (damageEffect)
-            {
-                Instantiate(damageEffect, transform.position, Quaternion.identity);
-            }
-
-            invincibilityTimer = invincibilityDuration;
-            isInvincible = true;
-
-            if (playerStats.CurrentHealth <= 0)
-            {
-                Kill();
-            }
-
-            UpdateHealthBar();
-        }
-    }
-
     private void Update()
     {
+        // Control de invencibilidad
         if (invincibilityTimer > 0)
         {
             invincibilityTimer -= Time.deltaTime;
@@ -73,47 +48,66 @@ public class PlayerHealth : MonoBehaviour
         Recover();
     }
 
+    public void TakeDamage(float dmg)
+    {
+        if (isInvincible) return;
+
+        playerStats.CurrentHealth -= dmg;
+
+        if (damageEffect)
+        {
+            Instantiate(damageEffect, transform.position, Quaternion.identity);
+        }
+
+        invincibilityTimer = invincibilityDuration;
+        isInvincible = true;
+
+        if (playerStats.CurrentHealth <= 0)
+        {
+            playerStats.CurrentHealth = 0;
+            Kill();
+        }
+
+        UpdateHealthBar();
+    }
+
     public void RestoreHealth(float amount)
     {
-        // only heal the player if their current health is less than their maximum health
-        if (playerStats.CurrentHealth < characterData.stats.maxHealth)
-        {
-            playerStats.CurrentHealth += amount;
-
-            // make sure the player's health doesn't exceed their maximum health
-            if (playerStats.CurrentHealth > characterData.stats.maxHealth)
-            {
-                playerStats.CurrentHealth = characterData.stats.maxHealth;
-            }
-        }
+        float maxHealth = playerStats.CharacterData.stats.maxHealth;
+        playerStats.CurrentHealth = Mathf.Min(playerStats.CurrentHealth + amount, maxHealth);
+        UpdateHealthBar();
     }
 
     private void Recover()
     {
-        if (playerStats.CurrentHealth < characterData.stats.maxHealth)
+        float maxHealth = playerStats.CharacterData.stats.maxHealth;
+        if (playerStats.CurrentHealth < maxHealth)
         {
             playerStats.CurrentHealth += playerStats.CurrentRecovery * Time.deltaTime;
-
-            // healing limit to avoid exceeding max health
-            if (playerStats.CurrentHealth > characterData.stats.maxHealth)
-            {
-                playerStats.CurrentHealth = characterData.stats.maxHealth;
-            }
+            playerStats.CurrentHealth = Mathf.Min(playerStats.CurrentHealth, maxHealth);
+            UpdateHealthBar();
         }
     }
 
     private void UpdateHealthBar()
     {
-        // update the health bar
-        UIManager.Instance.healthBar.fillAmount = playerStats.CurrentHealth / characterData.stats.maxHealth;
+        if (UIManager.Instance == null || UIManager.Instance.healthBar == null)
+            return;
+
+        float maxHealth = playerStats.CharacterData.stats.maxHealth;
+        UIManager.Instance.healthBar.fillAmount = playerStats.CurrentHealth / maxHealth;
     }
 
     private void Kill()
     {
         if (!GameManager.Instance.isGameOver)
         {
-            UIManager.Instance.AssignLevelReachedUI(playerExperience.level);
-            UIManager.Instance.AssignChosenWeaponsAndPassiveItemsUI(inventory.weaponUISlots, inventory.passiveItemUISlots);
+            if (playerExperience != null)
+                UIManager.Instance.AssignLevelReachedUI(playerExperience.level);
+
+            if (inventory != null)
+                UIManager.Instance.AssignChosenWeaponsAndPassiveItemsUI(inventory.weaponUISlots, inventory.passiveItemUISlots);
+
             GameManager.Instance.SetGameState(GameManager.GameState.GameOver);
         }
     }

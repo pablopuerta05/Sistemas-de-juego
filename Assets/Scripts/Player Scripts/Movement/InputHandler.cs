@@ -50,6 +50,6 @@ public class InputHandler : MonoBehaviour
             lastMovedVector = new Vector2(lastHorizontalVector, lastVerticalVector);    //While moving
         }
 
-        moveCommand.Execute(); 
+        moveCommand?.Execute();
     }
 }
