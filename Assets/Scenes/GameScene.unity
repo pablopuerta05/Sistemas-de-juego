@@ -4642,8 +4642,6 @@ MonoBehaviour:
     upgradeDescriptionDisplay: {fileID: 2056914929}
     upgradeIcon: {fileID: 1907219692}
     upgradeButton: {fileID: 1820366705}
-<<<<<<< Updated upstream
-=======
 --- !u!114 &1043873581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4727,7 +4725,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponIndex: 0
   passiveItemIndex: 0
->>>>>>> Stashed changes
 --- !u!1 &1046571449
 GameObject:
   m_ObjectHideFlags: 0
@@ -7821,11 +7818,7 @@ MonoBehaviour:
   checkerRadius: 0.2
   terrainMask:
     serializedVersion: 2
-<<<<<<< Updated upstream
-    m_Bits: 64
-=======
     m_Bits: 8
->>>>>>> Stashed changes
   currentChunk: {fileID: 1615780701}
   maxOpDist: 0
   optimizerCooldownDur: 0
