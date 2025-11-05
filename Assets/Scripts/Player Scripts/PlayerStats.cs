@@ -4,55 +4,23 @@ using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
-    private CharacterData characterData;
+    [Header("Character Data")]
+    [SerializeField] private CharacterData characterData;
+    public CharacterData CharacterData => characterData;
 
-    // current stats
-    private float currentHealth;
-    private float currentRecovery;
-    private float currentMoveSpeed;
-    private float currentMight;
-    private float currentProjectileSpeed;
-    private float currentMagnet;
-    private float luck;
+    public CharacterData.Stats baseStats;
+    [SerializeField] private CharacterData.Stats actualStats;
 
     #region Current Stats Properties
-    public float CurrentHealth
-    {
-        get { return currentHealth; }
-        set { UpdateStat(ref currentHealth, value, UIManager.Instance.currentHealthDisplay, "Health"); }
-    }
 
-    public float CurrentRecovery
-    {
-        get { return currentRecovery; }
-        set { UpdateStat(ref currentRecovery, value, UIManager.Instance.currentRecoveryDisplay, "Recovery"); }
-    }
-
-    public float CurrentMoveSpeed
-    {
-        get { return currentMoveSpeed; }
-        set { UpdateStat(ref currentMoveSpeed, value, UIManager.Instance.currentMoveSpeedDisplay, "Move Speed"); }
-    }
-
-    public float CurrentMight
-    {
-        get { return currentMight; }
-        set { UpdateStat(ref currentMight, value, UIManager.Instance.currentMightDisplay, "Might"); }
-    }
-
-    public float CurrentProjectileSpeed
-    {
-        get { return currentProjectileSpeed; }
-        set { UpdateStat(ref currentProjectileSpeed, value, UIManager.Instance.currentProjectileSpeedDisplay, "Projectile Speed"); }
-    }
-
-    public float CurrentMagnet
-    {
-        get { return currentMagnet; }
-        set { UpdateStat(ref currentMagnet, value, UIManager.Instance.currentMagnetDisplay, "Magnet"); }
-    }
-
-    public float Luck { get { return luck; } }
+    // current stats
+    public float CurrentHealth { get; set; }
+    public float CurrentRecovery { get; set; }
+    public float CurrentMoveSpeed { get; set; }
+    public float CurrentMight { get; set; }
+    public float CurrentProjectileSpeed { get; set; }
+    public float CurrentMagnet { get; set; }
+    public float Luck { get; set; }
 
     #endregion
 
@@ -65,7 +33,8 @@ public class PlayerStats : MonoBehaviour
         public int experienceCapIncrease;
     }
 
-    PlayerInventory playerInventory;
+    [Header("References")]
+    private PlayerInventory playerInventory;
     public int weaponIndex;
     public int passiveItemIndex;
 
@@ -86,12 +55,6 @@ public class PlayerStats : MonoBehaviour
 
         CharacterSelector.instance.DestroySingleton();
 
-        if (characterData == null)
-        {
-            Debug.LogWarning("Character data not found, loading default character...");
-            //characterData = Resources.Load<CharacterData>("DefaultCharacterData"); // toma un scriptable object default
-        }
-
         playerInventory = GetComponent<PlayerInventory>();
 
         if (playerInventory == null)
@@ -99,13 +62,8 @@ public class PlayerStats : MonoBehaviour
             Debug.LogError("PlayerInventory component not found!");
         }
 
-        // assign the variables
-        CurrentHealth = characterData.stats.maxHealth;
-        CurrentRecovery = characterData.stats.recovery;
-        CurrentMoveSpeed = characterData.stats.moveSpeed;
-        CurrentMight = characterData.stats.might;
-        CurrentProjectileSpeed = characterData.stats.projectileSpeed;
-        CurrentMagnet = characterData.stats.magnet;
+        // Asigna los valores base
+        baseStats = actualStats = characterData.stats;
 
         // spawn the starting weapon
         //playerInventory.SpawnWeapon(characterData.StartingWeapon); //bugged cannot convert from Weapon class to GO class!!
@@ -113,30 +71,30 @@ public class PlayerStats : MonoBehaviour
 
     private void Start()
     {
+        // assign the variables
+        CurrentHealth = characterData.stats.maxHealth;
+        CurrentRecovery = characterData.stats.recovery;
+        CurrentMoveSpeed = characterData.stats.moveSpeed;
+        CurrentMight = characterData.stats.might;
+        CurrentProjectileSpeed = characterData.stats.projectileSpeed;
+        CurrentMagnet = characterData.stats.magnet;
+        Luck = 1f; // si lo agregas luego a CharacterData, reemplázalo
+
         InitializeStatUI();
         UIManager.Instance.AssignChosenCharacterUI(characterData);
+        UIManager.Instance.InitializeRuntimeUI(characterData, CurrentHealth);
     }
 
     private void InitializeStatUI()
     {
-        UIManager ui = UIManager.Instance;
-        ui.currentHealthDisplay.text = $"Health: {currentHealth:F1}";
-        ui.currentRecoveryDisplay.text = $"Recovery: {currentRecovery:F1}";
-        ui.currentMoveSpeedDisplay.text = $"Move Speed: {currentMoveSpeed:F1}";
-        ui.currentMightDisplay.text = $"Might: {currentMight:F1}";
-        ui.currentProjectileSpeedDisplay.text = $"Projectile Speed: {currentProjectileSpeed:F1}";
-        ui.currentMagnetDisplay.text = $"Magnet: {currentMagnet:F1}";
-    }
+        if (UIManager.Instance == null) return;
 
-    private void UpdateStat(ref float stat, float newValue, TextMeshProUGUI display, string statName)
-    {
-        if (stat != newValue)
-        {
-            stat = newValue;
-            if (UIManager.Instance != null && display != null)
-            {
-                display.text = $"{statName}: {stat:F1}"; // con un decimal, queda más prolijo
-            }
-        }
+        UIManager ui = UIManager.Instance;
+        ui.currentHealthDisplay.text = $"Health: {CurrentHealth:F1}";
+        ui.currentRecoveryDisplay.text = $"Recovery: {CurrentRecovery:F1}";
+        ui.currentMoveSpeedDisplay.text = $"Move Speed: {CurrentMoveSpeed:F1}";
+        ui.currentMightDisplay.text = $"Might: {CurrentMight:F1}";
+        ui.currentProjectileSpeedDisplay.text = $"Projectile Speed: {CurrentProjectileSpeed:F1}";
+        ui.currentMagnetDisplay.text = $"Magnet: {CurrentMagnet:F1}";
     }
 }

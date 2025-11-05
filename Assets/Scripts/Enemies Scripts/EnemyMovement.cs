@@ -24,7 +24,7 @@ public class EnemyMovement : MonoBehaviour
     // Start is called before the first frame update
     protected virtual void Start()
     {
-        spawnManager = GetComponent<SpawnManager>();
+        spawnManager = FindAnyObjectByType<SpawnManager>();
         spawnedOutOfFrame = !spawnManager.IsWithinBoundaries(transform);
         enemy = GetComponent<EnemyStats>();
         player = FindAnyObjectByType<PlayerMovement>().transform;

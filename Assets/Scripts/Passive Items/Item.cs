@@ -84,10 +84,10 @@ public abstract class Item : MonoBehaviour
                 //inventory.Remove(c.itemType, true);
             }
 
-            if (c.itemType is WeaponData && consumeWeapons)
-            {
-                //inventory.Remove(c.itemType, true);
-            }
+            //if (c.itemType is WeaponData && consumeWeapons)
+            //{
+            //    inventory.Remove(c.itemType, true);
+            //}
         }
 
         // Should we consume ourselves as well?
@@ -96,10 +96,10 @@ public abstract class Item : MonoBehaviour
             //inventory.Remove((this as Passive).data, true);
         }
 
-        if (this is Weapon && consumeWeapons)
-        {
-            //inventory.Remove((this as Weapon).data, true);
-        }
+        //if (this is Weapon && consumeWeapons)
+        //{
+        //    inventory.Remove((this as Weapon).data, true);
+        //}
 
         // Add the new weapon onto our inventory
         //inventory.Add(evolutionData.outcome.itemType);
