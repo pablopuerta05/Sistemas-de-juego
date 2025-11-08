@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class Weapon : MonoBehaviour
@@ -68,7 +66,7 @@ public abstract class Weapon : MonoBehaviour
     public virtual void Initialise(WeaponData data)
     {
         maxLevel = data.maxLevel;
-        owner = FindObjectOfType<PlayerStats>();
+        owner = FindAnyObjectByType<PlayerStats>();
 
         this.data = data;
         currentStats = data.baseStats;
