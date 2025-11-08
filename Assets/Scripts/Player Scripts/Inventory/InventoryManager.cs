@@ -56,10 +56,10 @@ public class InventoryManager : MonoBehaviour
 
     private void OnEnable()
     {
-        //if (GameManager.Instance != null)
-        //    GameManager.Instance.OnLevelUpApplied += RemoveAndApplyUpgrades;
-        //else
-        //    Debug.LogWarning("GameManager.Instance es null en InventoryManager.OnEnable()");
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnLevelUpApplied += RemoveAndApplyUpgrades;
+        else
+            Debug.LogWarning("GameManager.Instance es null en InventoryManager.OnEnable()");
     }
 
     private void OnDisable()

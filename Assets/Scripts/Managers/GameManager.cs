@@ -55,7 +55,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         SetGameState(GameState.MainMenu); // Establecer el estado inicial
-        stopwatch = new Stopwatch();
     }
 
     private void Update()
@@ -82,6 +81,11 @@ public class GameManager : MonoBehaviour
 
         // Llamamos al método Enter del nuevo estado
         currentState.Enter();
+    }
+
+    public void AssignStopWatch(Stopwatch stopwatch)
+    {
+        this.stopwatch = stopwatch;
     }
 
     public void TriggerLevelUp()

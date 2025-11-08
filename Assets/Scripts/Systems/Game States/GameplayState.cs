@@ -26,7 +26,11 @@ public class GameplayState : IState
     public void Update()
     {
         CheckForPause();
-        gameManager.stopwatch.UpdateStopWatch();
+
+        if (gameManager.stopwatch != null)
+        {
+            gameManager.stopwatch.UpdateStopWatch();
+        }
     }
 
     private void CheckForPause()
