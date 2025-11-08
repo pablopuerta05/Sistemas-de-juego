@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[System.Obsolete("Removed for the new mapping controller")]
 public class ChunkTrigger : MonoBehaviour
 {
     private MapController controller;
@@ -20,7 +21,7 @@ public class ChunkTrigger : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            controller.currentChunk = targetMap;
+            //controller.currentChunk = targetMap;
         }
     }
 
@@ -28,10 +29,10 @@ public class ChunkTrigger : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            if (controller.currentChunk == targetMap)
-            {
-                controller.currentChunk = null;
-            }
+            //if (controller.currentChunk == targetMap)
+            //{
+            //    controller.currentChunk = null;
+            //}
         }
     }
 }

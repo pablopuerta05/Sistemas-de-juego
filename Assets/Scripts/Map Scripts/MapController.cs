@@ -1,198 +1,157 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class MapController : MonoBehaviour
 {
-    [System.Serializable]
-    public class PoolDefinition
-    {
-        public GameObject prefab;
-        public int poolSize = 10;
-    }
-
-    [Header("Chunk Configuration")]
-    public List<PoolDefinition> chunkDefinitions;
-    public GameObject player;
-    public float checkerRadius;
-    public LayerMask terrainMask;
-    public GameObject currentChunk;
+    [Header("Chunk Settings")]
+    [SerializeField] private GameObject player;
+    [SerializeField] private List<GameObject> chunkPrefabs;
+    [SerializeField] private float chunkSize = 10f;
+    [SerializeField] private int renderRadius = 1;
 
     [Header("Optimization")]
-    public float maxOpDist; //Must be greater than the lenght and width of the tilemap
-    private float opDist;
-    [SerializeField] private float optimizerCooldownDur;
+    [SerializeField] private float maxOpDist = 40f;
+    [SerializeField] private float optimizerCooldown = 2f;
 
-    private Vector3 playerLastPosition;
-    private float optimizerCooldown;
-
-    private List<GameObject> activeChunks = new List<GameObject>();
+    private Vector2Int playerLastChunk;
+    private float cooldown;
     private Transform chunkParent;
-    private HashSet<Vector3> spawnedPositions = new HashSet<Vector3>();
 
-    private List<ChunkPool> chunkPools = new List<ChunkPool>();
+    // Pool nativo de Unity
+    private List<ObjectPool<GameObject>> chunkPools = new List<ObjectPool<GameObject>>();
+    private Dictionary<Vector2Int, GameObject> activeChunks = new Dictionary<Vector2Int, GameObject>();
 
-    // Start is called before the first frame update
-    private void Start()
+    void Start()
     {
-        if (player == null)
+        if (!player)
         {
-            Debug.LogError("Player no asignado en MapController.");
+            Debug.LogError("Player no asignado en MapController");
+            enabled = false;
+            return;
         }
 
-        if (chunkDefinitions == null || chunkDefinitions.Count == 0)
-        {
-            Debug.LogError("No hay definiciones de chunks asignadas en MapController.");
-        }
-
-        playerLastPosition = player.transform.position;
         chunkParent = new GameObject("Chunks").transform;
 
-        foreach (PoolDefinition def in chunkDefinitions)
+        // Crear un pool para cada prefab
+        foreach (var prefab in chunkPrefabs)
         {
-            ChunkPool pool = new ChunkPool
-            {
-                prefab = def.prefab,
-                poolSize = def.poolSize
-            };
-            pool.Initialize(chunkParent);
+            var pool = new ObjectPool<GameObject>(
+                createFunc: () =>
+                {
+                    GameObject obj = Instantiate(prefab, chunkParent);
+                    obj.SetActive(false);
+                    return obj;
+                },
+                actionOnGet: (obj) => obj.SetActive(true),
+                actionOnRelease: (obj) => obj.SetActive(false),
+                actionOnDestroy: Destroy,
+                defaultCapacity: 20
+            );
+
             chunkPools.Add(pool);
         }
+
+        UpdateChunks(); // generar los primeros
     }
 
-    // Update is called once per frame
-    private void Update()
+    void Update()
     {
-        ChunkChecker();
-        ChunkOptimizer();
-    }
+        Vector2Int playerChunk = GetChunkCoord(player.transform.position);
 
-    private void ChunkChecker()
-    {
-        if (!currentChunk)
+        if (playerChunk != playerLastChunk)
         {
-            return;
+            playerLastChunk = playerChunk;
+            UpdateChunks();
         }
 
-        Vector3 moveDir = player.transform.position - playerLastPosition;
-        playerLastPosition = player.transform.position;
-
-        string primaryDirection = GetDirectionName(moveDir);
-
-        HashSet<string> directionsToCheck = new HashSet<string> { primaryDirection };
-
-        if (primaryDirection.Contains("Up")) directionsToCheck.Add("Up");
-        if (primaryDirection.Contains("Down")) directionsToCheck.Add("Down");
-        if (primaryDirection.Contains("Left")) directionsToCheck.Add("Left");
-        if (primaryDirection.Contains("Right")) directionsToCheck.Add("Right");
-
-        foreach (string dir in directionsToCheck)
+        cooldown -= Time.deltaTime;
+        if (cooldown <= 0)
         {
-            CheckAndSpawnChunk(dir);
+            cooldown = optimizerCooldown;
+            OptimizeChunks();
         }
     }
 
-    private void CheckAndSpawnChunk(string direction)
+    private Vector2Int GetChunkCoord(Vector3 position)
     {
-        Transform directionPoint = currentChunk.transform.Find(direction);
-        if (directionPoint == null)
-        {
-            Debug.LogWarning($"No se encontró el punto de dirección '{direction}' en el chunk '{currentChunk.name}'.");
-            return;
-        }
-
-        Vector3 spawnPos = directionPoint.position;
-
-        if (!Physics2D.OverlapCircle(spawnPos, checkerRadius, terrainMask))
-        {
-            ChunkSpawn(spawnPos);
-        }
+        int x = Mathf.FloorToInt(position.x / chunkSize);
+        int y = Mathf.FloorToInt(position.y / chunkSize);
+        return new Vector2Int(x, y);
     }
 
-    private string GetDirectionName(Vector3 direction)
+    private Vector3 CoordToWorld(Vector2Int coord)
     {
-        direction = direction.normalized;
-
-        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
-        {
-            // Moving horizontally more than vertically
-            if (direction.y > 0.5)
-            {
-                // Also moving upwards
-                return direction.x > 0 ? "Right Up" : "Left Up";
-            }
-            else if (direction.y < -0.5)
-            {
-                // Also moving downwards
-                return direction.x > 0 ? "Right Down" : "Left Down";
-            }
-            else
-            {
-                // Moving straight horizontally
-                return direction.x > 0 ? "Right" : "Left";
-            }
-        }
-        else
-        {
-            // Moving vertically more than horizontally
-            if (direction.x > 0.5)
-            {
-                // Also moving right
-                return direction.y > 0 ? "Right Up" : "Right Down";
-            }
-            else if (direction.x < -0.5)
-            {
-                // Also moving left
-                return direction.y > 0 ? "Left Up" : "Left Down";
-            }
-            else
-            {
-                // Moving straight vertically
-                return direction.y > 0 ? "Up" : "Down";
-            }
-        }
+        return new Vector3(coord.x * chunkSize, coord.y * chunkSize, 0);
     }
 
-    private void ChunkSpawn(Vector3 spawnPosition)
+    private void UpdateChunks()
     {
-        if (spawnedPositions.Contains(spawnPosition))
+        Vector2Int playerChunk = GetChunkCoord(player.transform.position);
+        HashSet<Vector2Int> neededChunks = new HashSet<Vector2Int>();
+
+        for (int x = -renderRadius; x <= renderRadius; x++)
         {
-            return; // Ya hay un chunk aquí (aunque esté desactivado)
+            for (int y = -renderRadius; y <= renderRadius; y++)
+            {
+                Vector2Int coord = playerChunk + new Vector2Int(x, y);
+                neededChunks.Add(coord);
+
+                if (!activeChunks.ContainsKey(coord))
+                {
+                    SpawnChunk(coord);
+                }
+            }
         }
 
+        // Liberar chunks que ya no se necesitan
+        List<Vector2Int> toRemove = new List<Vector2Int>();
+        foreach (var kvp in activeChunks)
+        {
+            if (!neededChunks.Contains(kvp.Key))
+            {
+                ReleaseChunk(kvp.Key);
+                toRemove.Add(kvp.Key);
+            }
+        }
+
+        foreach (var c in toRemove)
+            activeChunks.Remove(c);
+    }
+
+    private void SpawnChunk(Vector2Int coord)
+    {
         int rand = Random.Range(0, chunkPools.Count);
-        GameObject chunk = chunkPools[rand].GetFromPool();
-        chunk.transform.position = spawnPosition;
-        chunk.transform.SetParent(chunkParent);
+        GameObject chunk = chunkPools[rand].Get();
 
-        activeChunks.Add(chunk);
-        spawnedPositions.Add(spawnPosition);
-        currentChunk = chunk;
+        chunk.transform.position = CoordToWorld(coord);
+        chunk.name = $"Chunk_{coord.x}_{coord.y}";
+
+        activeChunks[coord] = chunk;
     }
 
-    private void ChunkOptimizer()
+    private void ReleaseChunk(Vector2Int coord)
     {
-        optimizerCooldown -= Time.deltaTime;
-
-        if (optimizerCooldown <= 0)
+        if (activeChunks.TryGetValue(coord, out GameObject chunk))
         {
-            optimizerCooldown = optimizerCooldownDur;
-        }
-        else
-        {
-            return;
-        }
-
-        foreach (GameObject chunk in activeChunks)
-        {
-            opDist = Vector3.Distance(player.transform.position, chunk.transform.position);
-            if (opDist > maxOpDist)
+            // Encuentra el pool correspondiente al prefab
+            foreach (var pool in chunkPools)
             {
-                chunk.SetActive(false);
+                if (pool.CountActive > 0 && pool.CountInactive >= 0)
+                {
+                    pool.Release(chunk);
+                    break;
+                }
             }
-            else
-            {
-                chunk.SetActive(true);
-            }
+        }
+    }
+
+    private void OptimizeChunks()
+    {
+        foreach (var kvp in activeChunks)
+        {
+            float dist = Vector3.Distance(player.transform.position, kvp.Value.transform.position);
+            kvp.Value.SetActive(dist < maxOpDist);
         }
     }
 }

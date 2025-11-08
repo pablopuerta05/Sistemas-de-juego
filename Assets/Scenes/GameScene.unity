@@ -7610,11 +7610,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1592344293}
   m_CullTransparentMesh: 1
---- !u!1 &1615780701 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2704910800252343514, guid: e9f48fbb17ea3614cb54a98189d1254c, type: 3}
-  m_PrefabInstance: {fileID: 8578892950091775640}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1623538329
 GameObject:
   m_ObjectHideFlags: 0
@@ -8233,21 +8228,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0190af23f8f38046b6bb70078b1dd9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkDefinitions:
-  - prefab: {fileID: 2704910800252343514, guid: e9f48fbb17ea3614cb54a98189d1254c, type: 3}
-    poolSize: 100
-  - prefab: {fileID: 2704910800252343514, guid: 5871418b05449404290b60817fdc5380, type: 3}
-    poolSize: 100
-  - prefab: {fileID: 2704910800252343514, guid: 8b830ba6abd293a42a9fe89936490f3a, type: 3}
-    poolSize: 100
   player: {fileID: 1043873571}
-  checkerRadius: 0.2
-  terrainMask:
-    serializedVersion: 2
-    m_Bits: 8
-  currentChunk: {fileID: 1615780701}
-  maxOpDist: 50
-  optimizerCooldownDur: 1
+  chunkPrefabs:
+  - {fileID: 2704910800252343514, guid: e9f48fbb17ea3614cb54a98189d1254c, type: 3}
+  - {fileID: 2704910800252343514, guid: 5871418b05449404290b60817fdc5380, type: 3}
+  - {fileID: 2704910800252343514, guid: 8b830ba6abd293a42a9fe89936490f3a, type: 3}
+  chunkSize: 40
+  renderRadius: 1
+  maxOpDist: 120
+  optimizerCooldown: 1
 --- !u!4 &1747635034
 Transform:
   m_ObjectHideFlags: 0
