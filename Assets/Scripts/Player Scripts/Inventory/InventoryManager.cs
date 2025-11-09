@@ -173,7 +173,7 @@ public class InventoryManager : MonoBehaviour
 
                     if (isNew)
                     {
-                        upgradeOption.upgradeButton.onClick.AddListener(() => playerInventory.SpawnWeapon(chosen.initialWeapon));
+                        upgradeOption.upgradeButton.onClick.AddListener(() => playerInventory.SpawnWeapon(chosen.WeaponData));
                         upgradeOption.upgradeDescriptionDisplay.text = chosen.WeaponData.baseStats.description;
                         upgradeOption.upgradeNameDisplay.text = chosen.WeaponData.name;
                     }

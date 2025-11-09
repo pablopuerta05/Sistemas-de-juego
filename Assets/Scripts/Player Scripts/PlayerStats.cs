@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -67,7 +66,7 @@ public class PlayerStats : MonoBehaviour
         baseStats = actualStats = characterData.stats;
 
         // spawn the starting weapon
-        //playerInventory.SpawnWeapon(characterData.StartingWeapon); //bugged cannot convert from Weapon class to GO class!!
+        playerInventory.SpawnWeapon(characterData.StartingWeapon);
     }
 
     private void Start()

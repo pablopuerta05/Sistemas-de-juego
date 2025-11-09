@@ -11,7 +11,7 @@ public class PlayerInventory : MonoBehaviour
         inventory = GetComponent<InventoryManager>();
     }
 
-    public void SpawnWeapon(GameObject weaponPrefab)
+    public void SpawnWeapon(WeaponData weaponData)
     {
         if (weaponIndex >= inventory.weaponSlots.Count)
         {
@@ -19,7 +19,13 @@ public class PlayerInventory : MonoBehaviour
             return;
         }
 
-        GameObject spawnedWeapon = Instantiate(weaponPrefab, transform.position, Quaternion.identity);
+        if (weaponData.weaponPrefab == null)
+        {
+            Debug.LogError("WeaponData no tiene asignado un prefab!");
+            return;
+        }
+
+        GameObject spawnedWeapon = Instantiate(weaponData.weaponPrefab, transform.position, Quaternion.identity);
         spawnedWeapon.transform.SetParent(transform);
 
         Weapon weapon = spawnedWeapon.GetComponent<Weapon>();
@@ -29,7 +35,7 @@ public class PlayerInventory : MonoBehaviour
             return;
         }
 
-        weapon.Initialise(weapon.data); // Asegúrate de que 'data' ya esté asignado en el prefab
+        weapon.Initialise(weaponData);
         inventory.AddWeapon(weaponIndex, weapon);
         weaponIndex++;
     }

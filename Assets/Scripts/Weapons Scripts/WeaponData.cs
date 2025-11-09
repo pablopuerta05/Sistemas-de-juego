@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -10,6 +8,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Weapon Data", menuName = "2D Top-Down Rogue-like/Weapon Data")]
 public class WeaponData : ScriptableObject
 {
+    [Header("Prefab")]
+    public GameObject weaponPrefab; // Prefab que se instanciará en la escena
+
     public Sprite icon;
     public int maxLevel;
 
