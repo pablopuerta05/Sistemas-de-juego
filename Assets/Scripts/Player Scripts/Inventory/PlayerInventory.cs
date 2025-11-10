@@ -61,5 +61,11 @@ public class PlayerInventory : MonoBehaviour
         passive.Initialise(passive.data); // Asegúrate de que 'data' ya esté asignado en el prefab
         inventory.AddPassiveItem(passiveItemIndex, passive);
         passiveItemIndex++;
+
+        PlayerStats stats = GetComponent<PlayerStats>();
+        if (stats != null)
+        {
+            stats.ApplyStatsBoost(passive.GetBoosts());
+        }
     }
 }

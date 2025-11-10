@@ -11,6 +11,8 @@ public class FloatingTextGenerator : MonoBehaviour
     [SerializeField] private TMP_FontAsset textFont;
     [SerializeField] private int textFontSize = 24;
     [SerializeField] private int poolSize = 20;
+    [SerializeField] private float textSpeed;
+    [SerializeField] private float textDuration;
 
     private readonly Queue<TextMeshProUGUI> textPool = new();
 
@@ -57,9 +59,9 @@ public class FloatingTextGenerator : MonoBehaviour
         textPool.Enqueue(tmPro);
     }
 
-    public void ShowFloatingText(string text, Transform target, float duration = 1f, float speed = 50f)
+    public void ShowFloatingText(string text, Transform target)
     {
-        StartCoroutine(AnimateFloatingText(text, target, duration, speed));
+        StartCoroutine(AnimateFloatingText(text, target, textDuration, textSpeed));
     }
 
     private IEnumerator AnimateFloatingText(string text, Transform target, float duration, float speed)
@@ -76,12 +78,27 @@ public class FloatingTextGenerator : MonoBehaviour
         while (t < duration)
         {
             yield return null;
+
+            if (target == null)
+            {
+                ReturnToPool(tmPro);
+                yield break;
+            }
+
             t += Time.deltaTime;
             yOffset += speed * Time.deltaTime;
             float alpha = 1 - t / duration;
 
             tmPro.color = new Color(tmPro.color.r, tmPro.color.g, tmPro.color.b, alpha);
-            rect.position = referenceCamera.WorldToScreenPoint(target.position + Vector3.up * yOffset);
+
+            if (target != null)
+            {
+                rect.position = referenceCamera.WorldToScreenPoint(target.position + Vector3.up * yOffset);
+            }
+            else
+            {
+                break;
+            }
         }
 
         ReturnToPool(tmPro);

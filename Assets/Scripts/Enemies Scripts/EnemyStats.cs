@@ -24,7 +24,7 @@ public class EnemyStats : MonoBehaviour
     private void Awake()
     {
         count++;
-        textGenerator = new FloatingTextGenerator();
+        textGenerator = FindAnyObjectByType<FloatingTextGenerator>();
     }
 
     private void Start()
@@ -43,7 +43,7 @@ public class EnemyStats : MonoBehaviour
         StartCoroutine(DamageFlash());
 
         // create the text popup when the enemy takes damage
-        if (dmg > 0)
+        if (dmg > 0 && textGenerator != null)
         {
             textGenerator.ShowFloatingText(Mathf.FloorToInt(dmg).ToString(), transform);
         }

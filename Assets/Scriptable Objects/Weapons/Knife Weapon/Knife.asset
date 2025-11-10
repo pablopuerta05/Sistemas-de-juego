@@ -12,12 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43929742972f1f14e9d34eecb062cba6, type: 3}
   m_Name: Knife
   m_EditorClassIdentifier: 
+  weaponPrefab: {fileID: 4464370926862869733, guid: 2cebff14a5551504da87401fa913e86a, type: 3}
   icon: {fileID: 541181831, guid: d520ad5715276c2499df90e8ef9fb31b, type: 3}
   maxLevel: 2
   behaviour: ProjectileWeapon
   baseStats:
     name: Knife
     description: Shoots towards the direction of the player
+    projectilePrefab: {fileID: -7950209363753487548, guid: 81b064c2abdbebb439c892968d47fa70, type: 3}
     hitEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2
@@ -39,6 +41,28 @@ MonoBehaviour:
   linearGrowth:
   - name: Level 2
     description: Shoots towards the direction of the player
+    projectilePrefab: {fileID: -7950209363753487548, guid: 81b064c2abdbebb439c892968d47fa70, type: 3}
+    hitEffect: {fileID: 0}
+    spawnVariance:
+      serializedVersion: 2
+      x: 0
+      y: 0
+      width: 0
+      height: 0
+    lifespan: 0
+    damage: 2
+    damageVariance: 0
+    area: 0
+    speed: 0
+    cooldown: 0
+    projectileInterval: 0
+    knockback: 0
+    number: 0
+    piercing: 0
+    maxInstances: 0
+  - name: Level 3
+    description: Shoots towards the direction of the player
+    projectilePrefab: {fileID: -7950209363753487548, guid: 81b064c2abdbebb439c892968d47fa70, type: 3}
     hitEffect: {fileID: 0}
     spawnVariance:
       serializedVersion: 2

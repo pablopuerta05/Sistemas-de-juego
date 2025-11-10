@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3802826179970212285}
-  - component: {fileID: 2999642190269304954}
+  - component: {fileID: 7979482515128999608}
   m_Layer: 0
   m_Name: Wings
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2999642190269304954
+--- !u!114 &7979482515128999608
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +41,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 4924767657941350595}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 907b9df2604e6094f967fb9ea29c81d5, type: 3}
+  m_Script: {fileID: 11500000, guid: b4fef41555761704798835f04a066719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  passiveItemData: {fileID: 11400000, guid: 57b91d8912551a9429610eeaebd4d4d6, type: 2}
+  currentLevel: 1
+  maxLevel: 5
+  data: {fileID: 11400000, guid: 3b5bb45a03e61f647acef969560c8a71, type: 2}
+  currentBoosts:
+    maxHealth: 0
+    recovery: 0
+    moveSpeed: 1
+    might: 0
+    projectileSpeed: 0
+    magnet: 0

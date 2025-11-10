@@ -8,7 +8,7 @@ public abstract class Weapon : MonoBehaviour
         public string name, description;
 
         [Header("Visuals")]
-        //public Projectile projectilePrefab; // if attached, a projectile will spawn every time the weapon cools down.
+        public Projectile projectilePrefab; // if attached, a projectile will spawn every time the weapon cools down.
         //public Aura auraPrefab; // if attached, an aura will spawn when weapon is equipped.
 
         public ParticleSystem hitEffect;
@@ -26,7 +26,7 @@ public abstract class Weapon : MonoBehaviour
             Stats result = new Stats();
             result.name = s2.name ?? s1.name;
             result.description = s2.description ?? s1.description;
-            //result.projectilePrefab = s2.projectilePrefab ?? s1.projectilePrefab;
+            result.projectilePrefab = s2.projectilePrefab ?? s1.projectilePrefab;
             //result.auraPrefab = s2.auraPrefab ?? s1.projectilePrefab;
             result.hitEffect = s2.hitEffect == null ? s1.hitEffect : s2.hitEffect;
             result.spawnVariance = s2.spawnVariance;

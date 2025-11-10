@@ -64,9 +64,6 @@ public class PlayerStats : MonoBehaviour
 
         // Asigna los valores base
         baseStats = actualStats = characterData.stats;
-
-        // spawn the starting weapon
-        playerInventory.SpawnWeapon(characterData.StartingWeapon);
     }
 
     private void Start()
@@ -83,6 +80,9 @@ public class PlayerStats : MonoBehaviour
         InitializeStatUI();
         UIManager.Instance.AssignChosenCharacterUI(characterData);
         UIManager.Instance.InitializeRuntimeUI(characterData, CurrentHealth);
+
+        // spawn the starting weapon
+        playerInventory.SpawnWeapon(characterData.StartingWeapon);
     }
 
     private void InitializeStatUI()
@@ -96,5 +96,35 @@ public class PlayerStats : MonoBehaviour
         ui.currentMightDisplay.text = $"Might: {CurrentMight:F1}";
         ui.currentProjectileSpeedDisplay.text = $"Projectile Speed: {CurrentProjectileSpeed:F1}";
         ui.currentMagnetDisplay.text = $"Magnet: {CurrentMagnet:F1}";
+    }
+
+    public void ApplyStatsBoost(CharacterData.Stats boost)
+    {
+        // Sumar los valores del boost a las stats actuales
+        CurrentHealth += boost.maxHealth;
+        CurrentRecovery += boost.recovery;
+        CurrentMoveSpeed += boost.moveSpeed;
+        CurrentMight += boost.might;
+        CurrentProjectileSpeed += boost.projectileSpeed;
+        CurrentMagnet += boost.magnet;
+
+        actualStats.maxHealth += boost.maxHealth;
+        actualStats.recovery += boost.recovery;
+        actualStats.moveSpeed += boost.moveSpeed;
+        actualStats.might += boost.might;
+        actualStats.projectileSpeed += boost.projectileSpeed;
+        actualStats.magnet += boost.magnet;
+
+        // Actualiza la UI en tiempo real
+        if (UIManager.Instance != null)
+        {
+            UIManager ui = UIManager.Instance;
+            ui.currentHealthDisplay.text = $"Health: {CurrentHealth:F1}";
+            ui.currentRecoveryDisplay.text = $"Recovery: {CurrentRecovery:F1}";
+            ui.currentMoveSpeedDisplay.text = $"Move Speed: {CurrentMoveSpeed:F1}";
+            ui.currentMightDisplay.text = $"Might: {CurrentMight:F1}";
+            ui.currentProjectileSpeedDisplay.text = $"Projectile Speed: {CurrentProjectileSpeed:F1}";
+            ui.currentMagnetDisplay.text = $"Magnet: {CurrentMagnet:F1}";
+        }
     }
 }
